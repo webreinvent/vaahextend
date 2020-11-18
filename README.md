@@ -15,7 +15,7 @@ WebReinvent\VaahLaravel\VaahLaravelServiceProvider::class,
 ]
 ```
 
-#### VaahArtisan
+### VaahArtisan
 
 Add Facade in `config/app.php`:
 ```php
