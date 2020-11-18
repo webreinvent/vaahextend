@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
-use WebReinvent\VaahLaravel\Helpers\VaahArtisan;
+
 
 class VaahLaravelServiceProvider extends ServiceProvider {
 
@@ -30,7 +30,7 @@ class VaahLaravelServiceProvider extends ServiceProvider {
     public function register() {
 
         App::bind('vaahartisan',function() {
-            return new VaahArtisan();
+            return new \WebReinvent\VaahLaravel\Helpers\VaahArtisan();
         });
 
     }

@@ -6,8 +6,13 @@ class VaahArtisan{
     public function __construct()
     {
 
-        die("<hr/>line number=abc");
 
+
+    }
+
+    public function test()
+    {
+        die("<hr/>line number=abc");
     }
 
 }
