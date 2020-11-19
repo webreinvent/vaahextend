@@ -1,4 +1,4 @@
-<?php namespace WebReinvent\VaahLaravel\Helpers;
+<?php namespace WebReinvent\VaahLaravel\Libraries;
 
 
 class VaahArtisan{
