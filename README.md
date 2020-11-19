@@ -46,10 +46,10 @@ Add Facade in `config/app.php`:
 
 **Method**
 ```php
-\VaahCountry::getCountryByCode($country_code);
-\VaahCountry::getCountryByName($country_name);
-\VaahCountry::getCountryByCallingCode($calling_code);
-\VaahCountry::getCountryListSelectOptions($show='country_name');
+\VaahCountry::getByCode($country_code);
+\VaahCountry::getByName($country_name);
+\VaahCountry::getByCallingCode($calling_code);
+\VaahCountry::getListSelectOptions($show='country_name');
 \VaahCountry::getList();
 \VaahCountry::getListWithSlug();
 \VaahCountry::getListWithSlugAsCallingCode();

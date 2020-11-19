@@ -10,7 +10,7 @@ class VaahCountry{
     }
 
     //-------------------------------------------------
-    public function getCountryByCode($country_code)
+    public function getByCode($country_code)
     {
         $countries = $this->getList();
 
@@ -19,7 +19,7 @@ class VaahCountry{
         return $country;
     }
 //---------------------------------------------------
-    public function getCountryByName($country_name)
+    public function getByName($country_name)
     {
         $countries = $this->getList();
 
@@ -28,7 +28,7 @@ class VaahCountry{
         return $country;
     }
 //---------------------------------------------------
-    public function getCountryByCallingCode($calling_code)
+    public function getByCallingCode($calling_code)
     {
         $countries = $this->getList();
 
@@ -50,7 +50,7 @@ class VaahCountry{
         return false;
     }
 //---------------------------------------------------
-    public function getCountryListSelectOptions($show='country_name')
+    public function getListSelectOptions($show='country_name')
     {
         $html = "";
         $list = $this->getList();
