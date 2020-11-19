@@ -1,6 +1,4 @@
 
-<<<<<<< Updated upstream
-=======
 ### Installation
 ```shell script
 composer require webreinvent/vaahlaravel
@@ -14,6 +12,7 @@ WebReinvent\VaahLaravel\VaahLaravelServiceProvider::class,
 ...
 ]
 ```
+---
 
 ### VaahArtisan
 
@@ -32,6 +31,7 @@ Add Facade in `config/app.php`:
 \VaahArtisan::seed($command, $db_connection_nane, $class);
 ```
 
+---
 
 ### VaahCountry
 
@@ -55,6 +55,8 @@ Add Facade in `config/app.php`:
 \VaahCountry::getListWithSlugAsCallingCode();
 \VaahCountry::getTimeZones();
 ```
+
+---
 
 ### VaahModule
 
@@ -85,4 +87,3 @@ Add Facade in `config/app.php`:
 \VaahModule::getModuleNamespace($module_name);
 \VaahModule::getModuleServiceProvider($module_name);
 ```
->>>>>>> Stashed changes
