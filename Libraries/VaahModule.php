@@ -15,17 +15,17 @@ class VaahModule{
         return config('vaahcms.modules_path');
     }
 //-----------------------------------------------------------------------------------
-    function getModuleRootPath($module_name)
+    function getRootPath($module_name)
     {
         return $this->getVaahCmsModulesPath()."/".$module_name;
     }
 //-----------------------------------------------------------------------------------
-    function getModuleRelativePath($module_name)
+    function getRelativePath($module_name)
     {
         return "/VaahCms/Modules/".$module_name;
     }
 //-----------------------------------------------------------------------------------
-    function getAllModulesPaths()
+    function getAllPaths()
     {
 
         $found_modules = [];
@@ -41,9 +41,9 @@ class VaahModule{
 
     }
 //-----------------------------------------------------------------------------------
-    function getAllModulesNames()
+    function getAllNames()
     {
-        $list = $this->getAllModulesPaths();
+        $list = $this->getAllPaths();
 
         $names = null;
 
@@ -58,9 +58,9 @@ class VaahModule{
         return $names;
     }
 //-----------------------------------------------------------------------------------
-    function getModuleConfigs($module_name)
+    function getConfigs($module_name)
     {
-        $path_settings = $this->getModuleRootPath($module_name).'/Config/config.php';
+        $path_settings = $this->getRootPath($module_name).'/Config/config.php';
 
         $config = require $path_settings;
 
@@ -72,9 +72,9 @@ class VaahModule{
         return null;
     }
 //-----------------------------------------------------------------------------------
-    function getModuleConfig($module_name, $key)
+    function getConfig($module_name, $key)
     {
-        $configs = $this->getModuleConfigs($module_name);
+        $configs = $this->getConfigs($module_name);
 
         if(!isset($configs[$key]))
         {
@@ -84,7 +84,35 @@ class VaahModule{
         return $configs[$key];
     }
 //-----------------------------------------------------------------------------------
-    function getModuleAssetsUrl($module_name, $file_path)
+    function getVersion($module_name)
+    {
+        $composer_path = $this->getRootPath($module_name).'/composer.json';
+
+        $composer_path = json_decode(file_get_contents($composer_path), true);
+
+        if(!isset($composer_path['version']))
+        {
+            return null;
+        }
+
+        return $composer_path['version'];
+    }
+//-----------------------------------------------------------------------------------
+    function getVersionNumber($module_name)
+    {
+        $version = $this->getVersion($module_name);
+
+        $version_number = null;
+
+        if(isset($version))
+        {
+            $version_number = preg_replace("/[^0-9\.]/", '', $version);
+        }
+
+        return $version_number;
+    }
+//-----------------------------------------------------------------------------------
+    function getAssetsUrl($module_name, $file_path)
     {
         $slug = \Str::slug($module_name);
         $version = config($slug.'.version');
@@ -92,42 +120,42 @@ class VaahModule{
         return $url;
     }
 //-----------------------------------------------------------------------------------
-    function getModuleMigrationPath($module_name)
+    function getMigrationPath($module_name)
     {
         $path =config('vaahcms.modules_path')."/".$module_name."/Database/Migrations/";
         $path = str_replace(base_path()."/", "", $path);
         return $path;
     }
 //-----------------------------------------------------------------------------------
-    function getModuleSeedsClass($module_name)
+    function getSeedsClass($module_name)
     {
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\DatabaseTableSeeder";
     }
 //-----------------------------------------------------------------------------------
-    function getModuleTenantMigrationPath($module_name)
+    function getTenantMigrationPath($module_name)
     {
         $path =config('vaahcms.modules_path')."/".$module_name."/Database/Migrations/Tenants";
         $path = str_replace(base_path()."/", "", $path);
         return $path;
     }
 //-----------------------------------------------------------------------------------
-    function getModuleTenantSeedsClass($module_name)
+    function getTenantSeedsClass($module_name)
     {
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\DatabaseTableSeeder";
     }
 //-----------------------------------------------------------------------------------
-    function getModuleTenantSampleData($module_name)
+    function getTenantSampleData($module_name)
     {
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\SampleTableSeeder";
     }
 //-----------------------------------------------------------------------------------
-    function getModuleNamespace($module_name)
+    function getNamespace($module_name)
     {
         $namespace = "VaahCms\Modules\\".$module_name;
         return $namespace;
     }
 //-----------------------------------------------------------------------------------
-    function getModuleServiceProvider($module_name)
+    function getServiceProvider($module_name)
     {
         $provider = "VaahCms\Modules\\".$module_name."\\Providers\\".$module_name."ServiceProvider";
         return $provider;

@@ -71,19 +71,21 @@ Add Facade in `config/app.php`:
 
 **Method**
 ```php
-\VaahModule::getVaahCmsModulesPath();
-\VaahModule::getModuleRootPath($module_name);
-\VaahModule::getModuleRelativePath($module_name);
-\VaahModule::getAllModulesPaths();
-\VaahModule::getAllModulesNames();
-\VaahModule::getModuleConfigs($module_name);
-\VaahModule::getModuleConfig($module_name, $key);
-\VaahModule::getModuleAssetsUrl($module_name, $file_path);
-\VaahModule::getModuleMigrationPath($module_name);
-\VaahModule::getModuleSeedsClass($module_name);
-\VaahModule::getModuleTenantMigrationPath($module_name);
-\VaahModule::getModuleTenantSeedsClass($module_name);
-\VaahModule::getModuleTenantSampleData($module_name);
-\VaahModule::getModuleNamespace($module_name);
-\VaahModule::getModuleServiceProvider($module_name);
+\VaahModule::getVaahCmsPath();
+\VaahModule::getRootPath($module_name);
+\VaahModule::getRelativePath($module_name);
+\VaahModule::getAllPaths();
+\VaahModule::getAllNames();
+\VaahModule::getConfigs($module_name);
+\VaahModule::getConfig($module_name, $key);
+\VaahModule::getVersion($module_name);
+\VaahModule::getVersionNumber($module_name);
+\VaahModule::getAssetsUrl($module_name, $file_path);
+\VaahModule::getMigrationPath($module_name);
+\VaahModule::getSeedsClass($module_name);
+\VaahModule::getTenantMigrationPath($module_name);
+\VaahModule::getTenantSeedsClass($module_name);
+\VaahModule::getTenantSampleData($module_name);
+\VaahModule::getNamespace($module_name);
+\VaahModule::getServiceProvider($module_name);
 ```
