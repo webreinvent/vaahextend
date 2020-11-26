@@ -106,7 +106,7 @@ class VaahModule{
 
         if(isset($version))
         {
-            $version_number = preg_replace("/[^0-9\.]/", '', $version);
+            $version_number = (int) filter_var($version, FILTER_SANITIZE_NUMBER_INT);
         }
 
         return $version_number;
@@ -132,6 +132,11 @@ class VaahModule{
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\DatabaseTableSeeder";
     }
 //-----------------------------------------------------------------------------------
+    function getSampleDataClass($module_name)
+    {
+        return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\SampleDataTableSeeder";
+    }
+//-----------------------------------------------------------------------------------
     function getTenantMigrationPath($module_name)
     {
         $path =config('vaahcms.modules_path')."/".$module_name."/Database/Migrations/Tenants";
@@ -144,9 +149,9 @@ class VaahModule{
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\DatabaseTableSeeder";
     }
 //-----------------------------------------------------------------------------------
-    function getTenantSampleData($module_name)
+    function getTenantSampleDataClass($module_name)
     {
-        return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\SampleTableSeeder";
+        return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\SampleDataTableSeeder";
     }
 //-----------------------------------------------------------------------------------
     function getNamespace($module_name)
