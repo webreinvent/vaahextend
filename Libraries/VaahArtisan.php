@@ -1,4 +1,4 @@
-<?php namespace WebReinvent\VaahLaravel\Helpers;
+<?php namespace WebReinvent\VaahLaravel\Libraries;
 
 
 class VaahArtisan{
@@ -7,9 +7,8 @@ class VaahArtisan{
 
     public function __construct()
     {
-
-
-
+        $this->params['--force'] = true;
+        $this->params['--quiet'] = true;
     }
 
     //-------------------------------------------------
