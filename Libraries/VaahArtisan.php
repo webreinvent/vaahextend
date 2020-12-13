@@ -80,6 +80,12 @@ class VaahArtisan{
             $response['status'] = 'failed';
             $response['errors'][] = $e->getMessage();
         }
+
+        if($db_connection_name)
+        {
+            \Config::set('database.default', 'mysql');
+        }
+
         return $response;
 
     }
@@ -112,6 +118,7 @@ class VaahArtisan{
     //-------------------------------------------------
     public function seed($command, $db_connection_name=null, $class=null)
     {
+
         $is_valid = $this->validateSeedCommand($command);
 
         if($is_valid['status'] == 'failed')
@@ -144,6 +151,12 @@ class VaahArtisan{
             $response['status'] = 'failed';
             $response['errors'][] = $e->getMessage();
         }
+
+        if($db_connection_name)
+        {
+            \Config::set('database.default', 'mysql');
+        }
+
         return $response;
 
     }
