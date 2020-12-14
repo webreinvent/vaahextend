@@ -140,6 +140,11 @@ class VaahArtisan{
             'status' => 'success'
         ];
 
+        if(isset($this->params['--path']))
+        {
+            unset($this->params['--path']);
+        }
+
         try{
             \Artisan::call($command, $this->params);
             $response['status'] = 'success';
