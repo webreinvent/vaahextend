@@ -44,6 +44,9 @@ class VaahLaravelServiceProvider extends ServiceProvider {
             return new \WebReinvent\VaahLaravel\Libraries\VaahModule();
         });
 
+        App::bind('vaahurl',function() {
+            return new \WebReinvent\VaahLaravel\Libraries\VaahUrl();
+        });
 
         $this->registerAlias();
 
@@ -57,6 +60,7 @@ class VaahLaravelServiceProvider extends ServiceProvider {
         $loader->alias('VaahArtisan', \WebReinvent\VaahLaravel\Facades\VaahArtisan::class);
         $loader->alias('VaahCountry', \WebReinvent\VaahLaravel\Facades\VaahCountry::class);
         $loader->alias('VaahModule', \WebReinvent\VaahLaravel\Facades\VaahModule::class);
+        $loader->alias('VaahUrl', \WebReinvent\VaahLaravel\Facades\VaahUrl::class);
 
     }
     //--------------------------------------------------------------------

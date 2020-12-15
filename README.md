@@ -89,3 +89,14 @@ Add Facade in `config/app.php`:
 \VaahModule::getNamespace($module_name);
 \VaahModule::getServiceProvider($module_name);
 ```
+
+### VaahCountry
+
+Add Facade in `config/app.php`:
+```php
+'aliases' => [
+...
+'VaahCountry' => \WebReinvent\VaahLaravel\Facades\VaahCountry::class,
+...
+]
+```
