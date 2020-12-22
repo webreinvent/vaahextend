@@ -31,6 +31,10 @@ class VaahLaravelServiceProvider extends ServiceProvider {
      */
     public function register() {
 
+        App::bind('vaahassets',function() {
+            return new \WebReinvent\VaahLaravel\Libraries\VaahAssets();
+        });
+
         App::bind('vaahartisan',function() {
             return new \WebReinvent\VaahLaravel\Libraries\VaahArtisan();
         });
@@ -57,10 +61,12 @@ class VaahLaravelServiceProvider extends ServiceProvider {
     private function registerAlias()
     {
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('VaahAssets', \WebReinvent\VaahLaravel\Facades\VaahAssets::class);
         $loader->alias('VaahArtisan', \WebReinvent\VaahLaravel\Facades\VaahArtisan::class);
         $loader->alias('VaahCountry', \WebReinvent\VaahLaravel\Facades\VaahCountry::class);
         $loader->alias('VaahModule', \WebReinvent\VaahLaravel\Facades\VaahModule::class);
         $loader->alias('VaahUrl', \WebReinvent\VaahLaravel\Facades\VaahUrl::class);
+
 
     }
     //--------------------------------------------------------------------
