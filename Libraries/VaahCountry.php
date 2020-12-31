@@ -3,34 +3,28 @@
 
 class VaahCountry{
 
-
-    public function __construct()
-    {
-
-    }
-
     //-------------------------------------------------
-    public function getByCode($country_code)
+    public static function getByCode($country_code)
     {
-        $countries = $this->getList();
+        $countries = self::getList();
 
         $country = vh_search_country($countries, 'country_code', $country_code);
 
         return $country;
     }
 //---------------------------------------------------
-    public function getByName($country_name)
+    public static function getByName($country_name)
     {
-        $countries = $this->getList();
+        $countries = self::getList();
 
         $country = vh_search_country($countries, 'name', $country_name);
 
         return $country;
     }
 //---------------------------------------------------
-    public function getByCallingCode($calling_code)
+    public static function getByCallingCode($calling_code)
     {
-        $countries = $this->getList();
+        $countries = self::getList();
 
         $country = vh_search_country($countries, 'calling_code', $calling_code);
 
@@ -39,7 +33,7 @@ class VaahCountry{
 //---------------------------------------------------
 //---------------------------------------------------
 //---------------------------------------------------
-    public function search($array, $key_name, $value)
+    public static function search($array, $key_name, $value)
     {
         foreach($array as $key => $array_item)
         {
@@ -50,10 +44,10 @@ class VaahCountry{
         return false;
     }
 //---------------------------------------------------
-    public function getListSelectOptions($show='country_name')
+    public static function getListSelectOptions($show='country_name')
     {
         $html = "";
-        $list = $this->getList();
+        $list = self::getList();
 
         $html .= '<option value="">Select</option>';
 
@@ -75,7 +69,7 @@ class VaahCountry{
     }
 
 //---------------------------------------------------
-    public function getList()
+    public static function getList()
     {
 
         $countries = [
@@ -133,7 +127,7 @@ class VaahCountry{
             ["code" => "CU", "name" => "Cuba", "calling_code" => "53"],
             ["code" => "CY", "name" => "Cyprus", "calling_code" => "357"],
             ["code" => "CZ", "name" => "Czech Republic", "calling_code" => "420"],
-            ["code" => "CD", "name" => "Democratic Republic of Congo", "calling_code" => "243"],
+            ["code" => "CD", "name" => "Democratic Republic static of Congo", "calling_code" => "243"],
             ["code" => "DK", "name" => "Denmark", "calling_code" => "45"],
             ["code" => "DJ", "name" => "Djibouti", "calling_code" => "253"],
             ["code" => "DM", "name" => "Dominica", "calling_code" => "1"],
@@ -246,7 +240,7 @@ class VaahCountry{
             ["code" => "PT", "name" => "Portugal", "calling_code" => "351"],
             ["code" => "PR", "name" => "Puerto Rico", "calling_code" => "1"],
             ["code" => "QA", "name" => "Qatar", "calling_code" => "974"],
-            ["code" => "CG", "name" => "Republic of the Congo", "calling_code" => "242"],
+            ["code" => "CG", "name" => "Republic static of the Congo", "calling_code" => "242"],
             ["code" => "RE", "name" => "Réunion", "calling_code" => "262"],
             ["code" => "RO", "name" => "Romania", "calling_code" => "40"],
             ["code" => "RU", "name" => "Russia", "calling_code" => "7"],
@@ -318,7 +312,7 @@ class VaahCountry{
         return $countries;
     }
 //---------------------------------------------------
-    public function getListWithSlug()
+    public static function getListWithSlug()
     {
 
         $countries = [
@@ -377,7 +371,7 @@ class VaahCountry{
             ["slug" => "CU", "name" => "Cuba", "calling_code" => "53"],
             ["slug" => "CY", "name" => "Cyprus", "calling_code" => "357"],
             ["slug" => "CZ", "name" => "Czech Republic", "calling_code" => "420"],
-            ["slug" => "CD", "name" => "Democratic Republic of Congo", "calling_code" => "243"],
+            ["slug" => "CD", "name" => "Democratic Republic static of Congo", "calling_code" => "243"],
             ["slug" => "DK", "name" => "Denmark", "calling_code" => "45"],
             ["slug" => "DJ", "name" => "Djibouti", "calling_code" => "253"],
             ["slug" => "DM", "name" => "Dominica", "calling_code" => "1"],
@@ -490,7 +484,7 @@ class VaahCountry{
             ["slug" => "PT", "name" => "Portugal", "calling_code" => "351"],
             ["slug" => "PR", "name" => "Puerto Rico", "calling_code" => "1"],
             ["slug" => "QA", "name" => "Qatar", "calling_code" => "974"],
-            ["slug" => "CG", "name" => "Republic of the Congo", "calling_code" => "242"],
+            ["slug" => "CG", "name" => "Republic static of the Congo", "calling_code" => "242"],
             ["slug" => "RE", "name" => "Réunion", "calling_code" => "262"],
             ["slug" => "RO", "name" => "Romania", "calling_code" => "40"],
             ["slug" => "RU", "name" => "Russia", "calling_code" => "7"],
@@ -563,7 +557,7 @@ class VaahCountry{
         return $countries;
     }
 //---------------------------------------------------
-    public function getListWithSlugAsCallingCode()
+    public static function getListWithSlugAsCallingCode()
     {
         $array = [
             ['slug'=>'91', 'name'=>'India (+91)'],
@@ -602,7 +596,7 @@ class VaahCountry{
             ['slug'=>'237', 'name'=>'Cameroon (+237)'],
             ['slug'=>'238', 'name'=>'Cape Verde Islands (+238)'],
             ['slug'=>'1345', 'name'=>'Cayman Islands (+1345)'],
-            ['slug'=>'236', 'name'=>'Central African Republic (+236)'],
+            ['slug'=>'236', 'name'=>'Central African Republic static (+236)'],
             ['slug'=>'56', 'name'=>'Chile (+56)'],
             ['slug'=>'86', 'name'=>'China (+86)'],
             ['slug'=>'57', 'name'=>'Colombia (+57)'],
@@ -614,10 +608,10 @@ class VaahCountry{
             ['slug'=>'53', 'name'=>'Cuba (+53)'],
             ['slug'=>'90392', 'name'=>'Cyprus North (+90392)'],
             ['slug'=>'357', 'name'=>'Cyprus South (+357)'],
-            ['slug'=>'42', 'name'=>'Czech Republic (+42)'],
+            ['slug'=>'42', 'name'=>'Czech Republic static (+42)'],
             ['slug'=>'45', 'name'=>'Denmark (+45)'],
             ['slug'=>'253', 'name'=>'Djibouti (+253)'],
-            ['slug'=>'1809', 'name'=>'Dominican Republic (+1809)'],
+            ['slug'=>'1809', 'name'=>'Dominican Republic static (+1809)'],
             ['slug'=>'593', 'name'=>'Ecuador (+593)'],
             ['slug'=>'20', 'name'=>'Egypt (+20)'],
             ['slug'=>'503', 'name'=>'El Salvador (+503)'],
@@ -732,7 +726,7 @@ class VaahCountry{
             ['slug'=>'248', 'name'=>'Seychelles (+248)'],
             ['slug'=>'232', 'name'=>'Sierra Leone (+232)'],
             ['slug'=>'65', 'name'=>'Singapore (+65)'],
-            ['slug'=>'421', 'name'=>'Slovak Republic (+421)'],
+            ['slug'=>'421', 'name'=>'Slovak Republic static (+421)'],
             ['slug'=>'386', 'name'=>'Slovenia (+386)'],
             ['slug'=>'677', 'name'=>'Solomon Islands (+677)'],
             ['slug'=>'252', 'name'=>'Somalia (+252)'],
@@ -777,7 +771,7 @@ class VaahCountry{
         return $array;
     }
 //---------------------------------------------------
-    public function getTimeZones()
+    public static function getTimeZones()
     {
         $timezones = array(
             ['slug' => 'Pacific/Midway', 'name' => "(GMT-11:00) Midway Island"],
