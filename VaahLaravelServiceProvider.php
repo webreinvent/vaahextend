@@ -65,9 +65,12 @@ class VaahLaravelServiceProvider extends ServiceProvider {
     private function registerAlias()
     {
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-        /*$loader->alias('VaahArtisan', \WebReinvent\VaahLaravel\Facades\VaahArtisan::class);
+        $loader->alias('VaahAssets', \WebReinvent\VaahLaravel\Facades\VaahAssets::class);
+        $loader->alias('VaahArtisan', \WebReinvent\VaahLaravel\Facades\VaahArtisan::class);
         $loader->alias('VaahCountry', \WebReinvent\VaahLaravel\Facades\VaahCountry::class);
-        $loader->alias('VaahModule', \WebReinvent\VaahLaravel\Facades\VaahModule::class);*/
+        $loader->alias('VaahModule', \WebReinvent\VaahLaravel\Facades\VaahModule::class);
+        $loader->alias('VaahUrl', \WebReinvent\VaahLaravel\Facades\VaahUrl::class);
+        $loader->alias('VaahFile', \WebReinvent\VaahLaravel\Facades\VaahFile::class);
 
 
     }
