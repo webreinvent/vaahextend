@@ -1,4 +1,4 @@
-<?php namespace WebReinvent\VaahLaravel\Libraries;
+<?php namespace WebReinvent\VaahExtend\Libraries;
 
 
 class VaahCountry{

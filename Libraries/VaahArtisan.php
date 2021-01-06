@@ -1,4 +1,4 @@
-<?php namespace WebReinvent\VaahLaravel\Libraries;
+<?php namespace WebReinvent\VaahExtend\Libraries;
 
 
 class VaahArtisan{
@@ -127,11 +127,19 @@ class VaahArtisan{
         return self::artisan();
     }
     //-------------------------------------------------
-    public static function publish($provider, $tag)
+    public static function publish($provider=null, $tag=null)
     {
         self::setParams();
-        self::$params['--provider'] = $provider;
-        self::$params['--tag'] = $tag;
+        if($provider)
+        {
+            self::$params['--provider'] = $provider;
+        }
+
+        if($tag)
+        {
+            self::$params['--tag'] = $tag;
+        }
+
         self::$command = 'vendor:publish';
         return self::artisan();
     }
@@ -163,6 +171,34 @@ class VaahArtisan{
         return self::artisan();
     }
     //-------------------------------------------------
+    public static function clearCache()
+    {
+
+        try{
+            \Artisan::call('optimize:clear', self::$params);
+            \Artisan::call('cache:clear', self::$params);
+            \Artisan::call('route:clear', self::$params);
+            \Artisan::call('config:clear', self::$params);
+            \Artisan::call('view:clear', self::$params);
+            \Artisan::call('clear-compiled', self::$params);
+
+            $response['status'] = 'success';
+            $response['data'] = [];
+        }catch(\Exception $e)
+        {
+            $response['status'] = 'failed';
+            $response['errors'][] = $e->getMessage();
+        }
+
+        return $response;
+    }
+    //-------------------------------------------------
+    public static function optimize()
+    {
+        self::setParams();
+        self::$command = 'optimize';
+        return self::artisan();
+    }
     //-------------------------------------------------
     //-------------------------------------------------
 

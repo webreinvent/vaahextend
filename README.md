@@ -1,14 +1,14 @@
 
 ### Installation
 ```shell script
-composer require webreinvent/vaahlaravel
+composer require webreinvent/vaahextend
 ```
 
 Add ServiceProvide in `config/app.php`:
 ```php
 'providers' => [
 ...
-WebReinvent\VaahLaravel\VaahLaravelServiceProvider::class,
+WebReinvent\VaahExtend\VaahExtendServiceProvider::class,
 ...
 ]
 ```
@@ -20,7 +20,7 @@ Add Facade in `config/app.php`:
 ```php
 'aliases' => [
 ...
-'VaahArtisan' => \WebReinvent\VaahLaravel\Facades\VaahArtisan::class,
+'VaahArtisan' => \WebReinvent\VaahExtend\Facades\VaahArtisan::class,
 ...
 ]
 ```
@@ -39,7 +39,7 @@ Add Facade in `config/app.php`:
 ```php
 'aliases' => [
 ...
-'VaahCountry' => \WebReinvent\VaahLaravel\Facades\VaahCountry::class,
+'VaahCountry' => \WebReinvent\VaahExtend\Facades\VaahCountry::class,
 ...
 ]
 ```
@@ -64,7 +64,7 @@ Add Facade in `config/app.php`:
 ```php
 'aliases' => [
 ...
-'VaahModule' => \WebReinvent\VaahLaravel\Facades\VaahModule::class,
+'VaahModule' => \WebReinvent\VaahExtend\Facades\VaahModule::class,
 ...
 ]
 ```
@@ -96,7 +96,7 @@ Add Facade in `config/app.php`:
 ```php
 'aliases' => [
 ...
-'VaahCountry' => \WebReinvent\VaahLaravel\Facades\VaahCountry::class,
+'VaahCountry' => \WebReinvent\VaahExtend\Facades\VaahCountry::class,
 ...
 ]
 ```

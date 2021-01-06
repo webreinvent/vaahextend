@@ -1,9 +1,11 @@
 <?php
-namespace WebReinvent\VaahLaravel\Libraries;
+namespace WebReinvent\VaahExtend\Libraries;
 
 use WebReinvent\VaahCms\Entities\User;
 use WebReinvent\VaahCms\Jobs\ProcessMails;
 use WebReinvent\VaahCms\Mail\GenericMail;
+use WebReinvent\VaahCms\Notifications\TestSmtp;
+use Illuminate\Support\Facades\Notification;
 
 
 class VaahMail{
@@ -95,6 +97,74 @@ class VaahMail{
 
     }
     //----------------------------------------------------------
+    public static function sendTestEmail($request)
+    {
+        $rules = array(
+            'mail_driver' => 'required',
+            'mail_host' => 'required',
+            'mail_port' => 'required',
+            'mail_username' => 'required',
+            'mail_password' => 'required',
+            'mail_from_address' => 'required',
+            'mail_from_name' => 'required',
+            'test_email_to' => 'required',
+        );
+
+        $validator = \Validator::make( $request->all(), $rules);
+        if ( $validator->fails() ) {
+
+            $errors             = errorsToArray($validator->errors());
+            $response['status'] = 'failed';
+            $response['errors'] = $errors;
+            return $response;
+        }
+
+        $inputs = [
+            'driver' => $request->mail_driver,
+            'host' => $request->mail_host,
+            'port' => $request->mail_port,
+            'username' => $request->mail_username,
+            'password' => $request->mail_password,
+            'from' => [
+                'address' => $request->mail_from_address,
+                'name' => $request->mail_from_name,
+            ],
+            "sendmail" => "/usr/sbin/sendmail -bs"
+        ];
+
+        if($request->mail_encryption != 'none')
+        {
+            $inputs['encryption'] = $request->mail_encryption;
+        }
+
+        $response['data']['inputs'] = $inputs;
+
+        try{
+
+            config(['mail' => $inputs]);
+
+            Notification::route('mail', $request->test_email_to)
+                ->notify(new TestSmtp());;
+
+            $response['status'] = 'success';
+            $response['data']['inputs'] = $inputs;
+            $response['messages'][] = 'Test email successfully sent';
+
+
+        }catch(\Exception $e)
+        {
+            $response['status'] = 'failed';
+            $response['errors'][] = $e->getMessage();
+
+        }
+
+        if(env('APP_DEBUG'))
+        {
+            $response['hint'][] = '';
+        }
+
+        return $response;
+    }
     //----------------------------------------------------------
     //----------------------------------------------------------
 
