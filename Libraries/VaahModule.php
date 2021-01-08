@@ -1,36 +1,31 @@
-<?php namespace WebReinvent\VaahLaravel\Libraries;
+<?php namespace WebReinvent\VaahExtend\Libraries;
 
 
 class VaahModule{
 
 
-    public function __construct()
-    {
-
-    }
-
     //-----------------------------------------------------------------------------------
-    function getVaahCmsModulesPath()
+    public static function getVaahCmsModulesPath()
     {
         return config('vaahcms.modules_path');
     }
 //-----------------------------------------------------------------------------------
-    function getRootPath($module_name)
+    public static function getRootPath($module_name)
     {
-        return $this->getVaahCmsModulesPath()."/".$module_name;
+        return self::getVaahCmsModulesPath()."/".$module_name;
     }
 //-----------------------------------------------------------------------------------
-    function getRelativePath($module_name)
+    public static function getRelativePath($module_name)
     {
         return "/VaahCms/Modules/".$module_name;
     }
 //-----------------------------------------------------------------------------------
-    function getAllPaths()
+    public static function getAllPaths()
     {
 
         $found_modules = [];
 
-        $modules_path = $this->getVaahCmsModulesPath();
+        $modules_path = self::getVaahCmsModulesPath();
 
         foreach (\File::directories($modules_path) as $module)
         {
@@ -41,9 +36,9 @@ class VaahModule{
 
     }
 //-----------------------------------------------------------------------------------
-    function getAllNames()
+    public static function getAllNames()
     {
-        $list = $this->getAllPaths();
+        $list = self::getAllPaths();
 
         $names = null;
 
@@ -58,9 +53,9 @@ class VaahModule{
         return $names;
     }
 //-----------------------------------------------------------------------------------
-    function getConfigs($module_name)
+    public static function getConfigs($module_name)
     {
-        $path_settings = $this->getRootPath($module_name).'/Config/config.php';
+        $path_settings = self::getRootPath($module_name).'/Config/config.php';
 
         $config = require $path_settings;
 
@@ -72,9 +67,9 @@ class VaahModule{
         return null;
     }
 //-----------------------------------------------------------------------------------
-    function getConfig($module_name, $key)
+    public static function getConfig($module_name, $key)
     {
-        $configs = $this->getConfigs($module_name);
+        $configs = self::getConfigs($module_name);
 
         if(!isset($configs[$key]))
         {
@@ -84,9 +79,9 @@ class VaahModule{
         return $configs[$key];
     }
 //-----------------------------------------------------------------------------------
-    function getVersion($module_name)
+    public static function getVersion($module_name)
     {
-        $composer_path = $this->getRootPath($module_name).'/composer.json';
+        $composer_path = self::getRootPath($module_name).'/composer.json';
 
         $composer_path = json_decode(file_get_contents($composer_path), true);
 
@@ -98,9 +93,9 @@ class VaahModule{
         return $composer_path['version'];
     }
 //-----------------------------------------------------------------------------------
-    function getVersionNumber($module_name)
+    public static function getVersionNumber($module_name)
     {
-        $version = $this->getVersion($module_name);
+        $version = self::getVersion($module_name);
 
         $version_number = null;
 
@@ -112,7 +107,7 @@ class VaahModule{
         return $version_number;
     }
 //-----------------------------------------------------------------------------------
-    function getAssetsUrl($module_name, $file_path)
+    public static function getAssetsUrl($module_name, $file_path)
     {
         $slug = \Str::slug($module_name);
         $version = config($slug.'.version');
@@ -120,47 +115,47 @@ class VaahModule{
         return $url;
     }
 //-----------------------------------------------------------------------------------
-    function getMigrationPath($module_name)
+    public static function getMigrationPath($module_name)
     {
         $path =config('vaahcms.modules_path')."/".$module_name."/Database/Migrations/";
         $path = str_replace(base_path()."/", "", $path);
         return $path;
     }
 //-----------------------------------------------------------------------------------
-    function getSeedsClass($module_name)
+    public static function getSeedsClass($module_name)
     {
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\DatabaseTableSeeder";
     }
 //-----------------------------------------------------------------------------------
-    function getSampleDataClass($module_name)
+    public static function getSampleDataClass($module_name)
     {
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\SampleDataTableSeeder";
     }
 //-----------------------------------------------------------------------------------
-    function getTenantMigrationPath($module_name)
+    public static function getTenantMigrationPath($module_name)
     {
         $path =config('vaahcms.modules_path')."/".$module_name."/Database/Migrations/Tenants";
         $path = str_replace(base_path()."/", "", $path);
         return $path;
     }
 //-----------------------------------------------------------------------------------
-    function getTenantSeedsClass($module_name)
+    public static function getTenantSeedsClass($module_name)
     {
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\DatabaseTableSeeder";
     }
 //-----------------------------------------------------------------------------------
-    function getTenantSampleDataClass($module_name)
+    public static function getTenantSampleDataClass($module_name)
     {
         return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\SampleDataTableSeeder";
     }
 //-----------------------------------------------------------------------------------
-    function getNamespace($module_name)
+    public static function getNamespace($module_name)
     {
         $namespace = "VaahCms\Modules\\".$module_name;
         return $namespace;
     }
 //-----------------------------------------------------------------------------------
-    function getServiceProvider($module_name)
+    public static function getServiceProvider($module_name)
     {
         $provider = "VaahCms\Modules\\".$module_name."\\Providers\\".$module_name."ServiceProvider";
         return $provider;

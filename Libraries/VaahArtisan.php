@@ -1,18 +1,21 @@
-<?php namespace WebReinvent\VaahLaravel\Libraries;
+<?php namespace WebReinvent\VaahExtend\Libraries;
 
 
 class VaahArtisan{
 
-    public $params;
+    static $params;
+    static $command;
 
-    public function __construct()
-    {
-        $this->params['--force'] = true;
-        $this->params['--quiet'] = true;
-    }
 
     //-------------------------------------------------
-    public function validateMigrateCommand($command)
+    public static function setParams()
+    {
+        self::$params = [];
+        self::$params['--force'] = true;
+        self::$params['--quiet'] = true;
+    }
+    //-------------------------------------------------
+    public static function validateMigrateCommands($command)
     {
         //acceptable commands
         $commands = [
@@ -23,11 +26,7 @@ class VaahArtisan{
             "migrate:reset",
             "migrate:rollback",
             "migrate:status",
-            "db:seed",
-            "db:wipe",
         ];
-
-
         if(!in_array($command, $commands))
         {
             $response['status'] = 'failed';
@@ -37,62 +36,61 @@ class VaahArtisan{
                 $response['hint']['acceptable_commands'] = $commands;
             }
             return $response;
-
         }
-
         $response['status'] = 'success';
         $response['data'][] = '';
         return $response;
     }
     //-------------------------------------------------
-    public function migrate($command, $db_connection_name=null, $path=null )
+    public static function artisan()
     {
-
-        $is_valid = $this->validateMigrateCommand($command);
-
-        if($is_valid['status'] == 'failed')
-        {
-            return $is_valid;
-        }
-
-        if($path)
-        {
-            $this->params['--path'] = $path;
-        }
-
-        if($path)
-        {
-            $this->params['--database'] = $db_connection_name;
-        }
-
-        $response = [
-            'status' => 'success'
-        ];
-
         try{
-            \Artisan::call($command, $this->params);
+            \Artisan::call(self::$command, self::$params);
             $response['status'] = 'success';
             $response['data'] = [];
-            $response['messages'][] = 'Migrate command "'.$command.'" successfully executed';
-
+            $response['messages'][] = 'Migrate command "'.self::$command.'" successfully executed';
         }catch(\Exception $e)
         {
             $response['status'] = 'failed';
             $response['errors'][] = $e->getMessage();
         }
         return $response;
-
     }
     //-------------------------------------------------
-    public function validateSeedCommand($command)
+    public static function migrate($command='migrate', $path=null, $db_connection_name=null )
+    {
+        self::setParams();
+        $is_valid = self::validateMigrateCommands($command);
+        if($is_valid['status'] == 'failed')
+        {
+            return $is_valid;
+        }
+        if($path)
+        {
+            self::$params['--path'] = $path;
+        }
+        if($path)
+        {
+            self::$params['--database'] = $db_connection_name;
+        }
+
+        self::$command = $command;
+
+        return self::artisan();
+    }
+    //-------------------------------------------------
+    public static function migrationReset($path=null, $db_connection_name=null)
+    {
+        return self::migrate('migrate:reset', $db_connection_name, $path);
+    }
+    //-------------------------------------------------
+    public static function validateSeedCommand($command)
     {
         //acceptable commands
         $commands = [
             "db:seed",
             "db:wipe",
         ];
-
-
         if(!in_array($command, $commands))
         {
             $response['status'] = 'failed';
@@ -102,51 +100,106 @@ class VaahArtisan{
                 $response['hint']['acceptable_commands'] = $commands;
             }
             return $response;
-
         }
-
         $response['status'] = 'success';
         $response['data'][] = '';
         return $response;
     }
     //-------------------------------------------------
-    public function seed($command, $db_connection_name=null, $class=null)
+    public static function seed($command='db:seed', $class=null,  $db_connection_name=null )
     {
-        $is_valid = $this->validateSeedCommand($command);
-
+        self::setParams();
+        $is_valid = self::validateSeedCommand($command);
         if($is_valid['status'] == 'failed')
         {
             return $is_valid;
         }
-
         if($class)
         {
-            $this->params['--class'] = $class;
+            self::$params['--class'] = $class;
         }
-
         if($db_connection_name)
         {
-            $this->params['--database'] = $db_connection_name;
+            self::$params['--database'] = $db_connection_name;
+        }
+        self::$command = $command;
+
+        return self::artisan();
+    }
+    //-------------------------------------------------
+    public static function publish($provider=null, $tag=null)
+    {
+        self::setParams();
+        if($provider)
+        {
+            self::$params['--provider'] = $provider;
         }
 
-        $response = [
-            'status' => 'success'
-        ];
+        if($tag)
+        {
+            self::$params['--tag'] = $tag;
+        }
+
+        self::$command = 'vendor:publish';
+        return self::artisan();
+    }
+    //-------------------------------------------------
+    public static function publishMigrations($provider)
+    {
+        self::setParams();
+        self::$params['--provider'] = $provider;
+        self::$params['--tag'] = 'migrations';
+        self::$command = 'vendor:publish';
+        return self::artisan();
+    }
+    //-------------------------------------------------
+    public static function publishSeeds($provider)
+    {
+        self::setParams();
+        self::$params['--provider'] = $provider;
+        self::$params['--tag'] = 'seeds';
+        self::$command = 'vendor:publish';
+        return self::artisan();
+    }
+    //-------------------------------------------------
+    public static function publishAssets($provider)
+    {
+        self::setParams();
+        self::$params['--provider'] = $provider;
+        self::$params['--tag'] = 'assets';
+        self::$command = 'vendor:publish';
+        return self::artisan();
+    }
+    //-------------------------------------------------
+    public static function clearCache()
+    {
 
         try{
-            \Artisan::call($command, $this->params);
+            \Artisan::call('optimize:clear', self::$params);
+            \Artisan::call('cache:clear', self::$params);
+            \Artisan::call('route:clear', self::$params);
+            \Artisan::call('config:clear', self::$params);
+            \Artisan::call('view:clear', self::$params);
+            \Artisan::call('clear-compiled', self::$params);
+
             $response['status'] = 'success';
             $response['data'] = [];
-            $response['messages'][] = 'Database has been seeded successfully';
-
         }catch(\Exception $e)
         {
             $response['status'] = 'failed';
             $response['errors'][] = $e->getMessage();
         }
-        return $response;
 
+        return $response;
     }
+    //-------------------------------------------------
+    public static function optimize()
+    {
+        self::setParams();
+        self::$command = 'optimize';
+        return self::artisan();
+    }
+    //-------------------------------------------------
     //-------------------------------------------------
 
 }

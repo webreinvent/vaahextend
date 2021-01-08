@@ -1,7 +1,8 @@
 {
-  "name": "webreinvent/vaahlaravel",
-  "description": "Small Laravel Helpers",
-  "keywords": ["laravel"],
+  "name": "webreinvent/vaahextend",
+  "description": "Quickly adaptable helpers to extend VaahCMS",
+  "keywords": ["vaahcms", "laravel"],
+  "version": "0.0.4",
   "homepage": "https://www.webreinvent.com",
   "license": "MIT",
   "authors": [
@@ -12,7 +13,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "WebReinvent\\VaahLaravel\\": "./"
+      "WebReinvent\\VaahExtend\\": "./"
     }
   }
 }
