@@ -91,6 +91,33 @@ Add Facade in `config/app.php`:
 \VaahModule::getNamespace($module_name);
 \VaahModule::getServiceProvider($module_name);
 ```
+---
+
+### VaahEventBrite
+
+Add Facade in `config/app.php`:
+```php
+'aliases' => [
+...
+'VaahEventBrite' => WebReinvent\VaahExtend\Facades\VaahEventBrite::class,
+...
+]
+```
+
+**Method**
+```php
+\VaahEventBrite::events()->get();
+\VaahEventBrite::events()->find($event_id);
+\VaahEventBrite::events()->store($event);
+\VaahEventBrite::events()->update($event_id, $event);
+\VaahEventBrite::events()->cancel($event_id);
+\VaahEventBrite::events()->publish($event_id);
+\VaahEventBrite::events()->delete($event_id);
+\VaahEventBrite::attendees()->get($event_id);
+\VaahEventBrite::attendees()->find($event_id, $attendee_id);
+\VaahEventBrite::orders()->find($order_id);
+\VaahEventBrite::organizations()->get();
+```
 
 ### VaahCountry
 
