@@ -62,6 +62,10 @@ class VaahExtendServiceProvider extends ServiceProvider {
             return new \WebReinvent\VaahExtend\Libraries\VaahUrl();
         });
 
+        App::bind('vaaheventbrite',function() {
+            return new \WebReinvent\VaahExtend\Libraries\VaahEventBrite\EventBrite();
+        });
+
 
         $this->registerAlias();
 
@@ -79,6 +83,7 @@ class VaahExtendServiceProvider extends ServiceProvider {
         $loader->alias('VaahMail', \WebReinvent\VaahExtend\Facades\VaahMail::class);
         $loader->alias('VaahModule', \WebReinvent\VaahExtend\Facades\VaahModule::class);
         $loader->alias('VaahUrl', \WebReinvent\VaahExtend\Facades\VaahUrl::class);
+        $loader->alias('VaahEventBrite', \WebReinvent\VaahExtend\Facades\VaahEventBrite::class);
 
     }
     //--------------------------------------------------------------------
