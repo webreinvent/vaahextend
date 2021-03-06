@@ -34,7 +34,7 @@ class EventBrite
     public function __call(string $function, array $args)
     {
         $options = ['get', 'post', 'patch', 'put', 'delete'];
-        $path = (isset($args[0])) ? $args[0] : null;
+        $path = (isset($args[0])) ? $args[0] : '';
         $data = (isset($args[1])) ? $args[1] : null;
         $header = (isset($args[2])) ? $args[2] : null;
 
@@ -49,7 +49,7 @@ class EventBrite
     public function request(string $type, string $endpoint, array $data = [])
     {
         $url = 'https://www.eventbriteapi.com/v3';
-        $key = config('eventbrite.key');
+        $key = env('EVENTBRITE_KEY');
 
         $c = new Curl($url);
         return $c->$type($endpoint.'?token='.$key, $data);

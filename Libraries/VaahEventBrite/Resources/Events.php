@@ -9,7 +9,7 @@ class Events extends VaahEventBrite
 {
     public function get($params = []): array
     {
-        $organisationId = config('eventbrite.org');
+        $organisationId = env('EVENTBRITE_ORG_ID');
         return VaahEventBrite::request('get', "/organizations/$organisationId/events",$params);
     }
 
@@ -20,7 +20,7 @@ class Events extends VaahEventBrite
 
     public function store(array $event): array
     {
-        $organisationId = config('services.eventbrite.orgid');
+        $organisationId = env('EVENTBRITE_ORG_ID');
         return VaahEventBrite::request('post', "/organizations/$organisationId/events", $event);
     }
 
