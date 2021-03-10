@@ -9,21 +9,26 @@ class Events extends VaahEventBrite
 {
     public function get($params = []): array
     {
-        $organisationId = config('eventbrite.org');
+        $organisationId = env('EVENTBRITE_ORG_ID');
         return VaahEventBrite::request('get', "/organizations/$organisationId/events",$params);
     }
 
-    public function find(int $event_id): array
+    public function find(int $event_id, $param): array
     {
-        $event =  VaahEventBrite::request('get', "/events/$event_id");
-        //fetching description for each event
-        $event['updated_description']  =  VaahEventBrite::request('get', "/events/$event_id/description");
+
+        $path = "/events/$event_id";
+
+        if($param){
+            $path = "/events/$event_id/$param";
+        }
+
+        $event =  VaahEventBrite::request('get', $path);
         return $event;
     }
 
     public function store(array $event): array
     {
-        $organisationId = config('services.eventbrite.orgid');
+        $organisationId = env('EVENTBRITE_ORG_ID');
         return VaahEventBrite::request('post', "/organizations/$organisationId/events", $event);
     }
 
