@@ -1,3 +1,5 @@
+# VaahLaravel
+> Small Laravel Helpers
 
 ### Installation
 ```shell script
@@ -88,6 +90,57 @@ Add Facade in `config/app.php`:
 \VaahModule::getTenantSampleData($module_name);
 \VaahModule::getNamespace($module_name);
 \VaahModule::getServiceProvider($module_name);
+```
+---
+
+### VaahEventBrite
+
+Add Facade in `config/app.php`:
+```php
+'aliases' => [
+...
+'VaahEventBrite' => WebReinvent\VaahExtend\Facades\VaahEventBrite::class,
+...
+]
+```
+
+Add env configuration:
+```
+
+...
+EVENTBRITE_KEY=xxxxxxxxxxxxxxxx
+EVENTBRITE_ORG_ID=xxxxxxxxxxxxx
+...
+
+```
+
+Reference url: https://www.eventbrite.com/platform/api#/reference
+
+**Method**
+```php
+\VaahEventBrite::events()->get();
+
+$event_id = 12345;
+
+\VaahEventBrite::events()->find($event_id);
+
+$event = [
+    'name'=>'Event Name',
+    'description'=>'Event description',
+     ....
+     ...
+];
+
+
+\VaahEventBrite::events()->store($event);
+\VaahEventBrite::events()->update($event_id, $event);
+\VaahEventBrite::events()->cancel($event_id);
+\VaahEventBrite::events()->publish($event_id);
+\VaahEventBrite::events()->delete($event_id);
+\VaahEventBrite::attendees()->get($event_id);
+\VaahEventBrite::attendees()->find($event_id, $attendee_id);
+\VaahEventBrite::orders()->find($order_id);
+\VaahEventBrite::organizations()->get();
 ```
 
 ### VaahCountry
