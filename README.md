@@ -27,8 +27,8 @@ Add Facade in `config/app.php`:
 
 **Method**
 ```php
-\VaahArtisan::migrate($command, $db_connection_nane, $path); 
-\VaahArtisan::seed($command, $db_connection_nane, $class);
+\VaahArtisan::migrate($command, $path, $db_connection_name ); 
+\VaahArtisan::seed($command, $class, $db_connection_nane);
 ```
 
 ---
