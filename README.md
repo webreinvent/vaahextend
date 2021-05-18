@@ -153,3 +153,28 @@ Add Facade in `config/app.php`:
 ...
 ]
 ```
+
+
+### VaahMail
+
+Add Facade in `config/app.php`:
+```php
+'aliases' => [
+...
+'VaahMail' => WebReinvent\VaahExtend\Facades\VaahMail::class,
+...
+]
+```
+
+### VaahImap
+
+- reference: https://github.com/barbushin/php-imap 
+
+Add Facade in `config/app.php`:
+```php
+'aliases' => [
+...
+'VaahImap' => WebReinvent\VaahExtend\Facades\VaahImap::class,
+...
+]
+```

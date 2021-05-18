@@ -54,6 +54,10 @@ class VaahExtendServiceProvider extends ServiceProvider {
             return new \WebReinvent\VaahExtend\Libraries\VaahMail();
         });
 
+        App::bind('vaahimap',function() {
+            return new \WebReinvent\VaahExtend\Libraries\VaahImap();
+        });
+
         App::bind('vaahmodule',function() {
             return new \WebReinvent\VaahExtend\Libraries\VaahModule();
         });
@@ -81,6 +85,7 @@ class VaahExtendServiceProvider extends ServiceProvider {
         $loader->alias('VaahCountry', \WebReinvent\VaahExtend\Facades\VaahCountry::class);
         $loader->alias('VaahFile', \WebReinvent\VaahExtend\Facades\VaahFile::class);
         $loader->alias('VaahMail', \WebReinvent\VaahExtend\Facades\VaahMail::class);
+        $loader->alias('VaahImap', \WebReinvent\VaahExtend\Facades\VaahImap::class);
         $loader->alias('VaahModule', \WebReinvent\VaahExtend\Facades\VaahModule::class);
         $loader->alias('VaahUrl', \WebReinvent\VaahExtend\Facades\VaahUrl::class);
         $loader->alias('VaahEventBrite', \WebReinvent\VaahExtend\Facades\VaahEventBrite::class);
