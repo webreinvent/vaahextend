@@ -13,7 +13,10 @@
     ],
     "require": {
         "php": "^7.4",
-        "php-imap/php-imap": "^4.0"
+        "php-imap/php-imap": "^4.0",
+        "ext-json": "*",
+        "ext-imap": "*",
+        "ext-curl": "*"
     },
     "autoload": {
     "psr-4": {

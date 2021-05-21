@@ -52,7 +52,7 @@ class VaahImap{
         return $response;
     }
     //----------------------------------------------------------
-    function connect($search_by='SINCE', $search_value=null): array
+    function connect($search_by='SINCE', $search_value=null)
     {
 
         $response = $this->test();
@@ -97,7 +97,8 @@ class VaahImap{
             return $response;
         }
 
-        if(!$this->mail_uids) {
+
+        if(count($this->mail_uids) < 1) {
             $response = [
                 'status' => "success",
                 'data' => [],
@@ -108,7 +109,7 @@ class VaahImap{
 
     }
     //----------------------------------------------------------
-    function getMails($search_by='SINCE', $search_value=null): array
+    function getMails($search_by='SINCE', $search_value=null)
     {
 
         $connect = $this->connect($search_by, $search_value);
@@ -118,7 +119,7 @@ class VaahImap{
             return $connect;
         }
 
-        if(count($this->mail_uids) > 0 )
+        if(count($this->mail_uids) < 1 )
         {
             $response = [
                 'status' => "success",
@@ -130,8 +131,10 @@ class VaahImap{
 
         $data = [];
 
+        $i = 0;
         foreach ($this->mail_uids as $mail_uid){
-            $data[$mail_uid] = $this->getMail($mail_uid);
+            $data[$i] = $this->getMail($mail_uid);
+            $i++;
         }
 
         $response = [
@@ -145,15 +148,15 @@ class VaahImap{
     {
         $mail = $this->imap->getMail($uid);
 
-        $data['mail'] = $mail;
+        $data['mail_uid'] = $uid;
+        $data['contacts']['from'] = $this->getFrom($mail);
+        $data['contacts']['reply_to'] = $this->getReplyTo($mail);
+        $data['contacts']['sender'] = $this->getSender($mail);
+        $data['contacts']['to'] = $this->getTo($mail);
+        $data['contacts']['cc'] = $this->getCc($mail);
+        $data['contacts']['bcc'] = $this->getBcc($mail);
 
-        $data['from'] = $this->getFrom($mail);
-        $data['to'] = $this->getTo($mail);
-        $data['cc'] = $this->getCc($mail);
-        $data['bcc'] = $this->getBcc($mail);
-        $data['message_html'] = $mail->textHtml;
-        $data['message_plain'] = $mail->textPlain;
-        $data['date'] = $mail->date;
+        $data['date_time'] = $mail->date;
 
         $data['subject'] = $mail->subject;
 
@@ -162,23 +165,28 @@ class VaahImap{
             $data['subject'] = "(no subject)";
         }
 
-        $data['has_attachments'] = false;
+        $data['message_html'] = $mail->textHtml;
+        $data['message_plain'] = $mail->textPlain;
+
+        $data['has_attachments'] = null;
 
         if($mail->hasAttachments())
         {
             $data['has_attachments'] = true;
         }
 
-        return $mail;
+        $data['mail'] = $mail;
+
+        return $data;
     }
     //----------------------------------------------------------
 
     //----------------------------------------------------------
-    function getContactArray($mail_contact, $type): array
+    function getContactArray($mail_contact, $type)
     {
         if(count($mail_contact) < 1 || empty($mail_contact))
         {
-            return array();
+            return null;
         }
 
         $i = 0;
@@ -191,12 +199,20 @@ class VaahImap{
                 continue;
             }
 
-            if (strpos($item, 'undisclosed-recipients') !== false) {
-                continue;
-            }
             $result[$i]['type'] = $type;
-            $result[$i]['name'] = $item;
-            $result[$i]['email'] = $key;
+
+
+            if(isset($item->personal))
+            {
+                $result[$i]['name'] = $item->personal;
+            }
+
+            if(isset($item->mailbox))
+            {
+                $result[$i]['email'] = $item->mailbox."@".$item->host;
+            }
+
+
             $i++;
         }
 
@@ -221,11 +237,32 @@ class VaahImap{
         return $from;
     }
     //----------------------------------------------------------
+    function getReplyTo($mail)
+    {
+        $reply_to = null;
+        if(isset($mail->headers->reply_to)){
+            $reply_to = $this->getContactArray($mail->headers->reply_to, 'reply_to');
+        }
+
+        return $reply_to;
+
+    }
+    //----------------------------------------------------------
+    function getSender($mail)
+    {
+        $sender = null;
+        if(isset($mail->headers->sender)){
+            $sender = $this->getContactArray($mail->headers->sender, 'sender');
+        }
+
+        return $sender;
+    }
+    //----------------------------------------------------------
     function getTo($mail)
     {
         $emails = null;
-        if(isset($mail->to)){
-            $emails = $this->getContactArray($mail->to, 'from');
+        if(isset($mail->headers->to)){
+            $emails = $this->getContactArray($mail->headers->to, 'to');
         }
         return $emails;
     }
@@ -233,8 +270,8 @@ class VaahImap{
     function getCc($mail)
     {
         $emails = null;
-        if(isset($mail->cc)){
-            $emails = $this->getContactArray($mail->cc, 'cc');
+        if(isset($mail->headers->cc)){
+            $emails = $this->getContactArray($mail->headers->cc, 'cc');
         }
         return $emails;
     }
@@ -242,8 +279,8 @@ class VaahImap{
     function getBcc($mail)
     {
         $emails = null;
-        if(isset($mail->bcc)){
-            $emails = $this->getContactArray($mail->bcc, 'bcc');
+        if(isset($mail->headers->bcc)){
+            $emails = $this->getContactArray($mail->headers->bcc, 'bcc');
         }
         return $emails;
     }
