@@ -5,13 +5,10 @@ use \Swift_Mailer;
 use Swift_Message;
 use \Swift_SmtpTransport as SmtpTransport;
 use Swift_SmtpTransport;
-use WebReinvent\VaahCms\Mail\TestMail;
 
 
 class VaahSmtp{
 
-    public $from_address;
-    public $from_name;
     public $hostname;
     public $username;
     public $password;
@@ -70,12 +67,17 @@ class VaahSmtp{
             {
                 foreach ($attachments_array as $attachment)
                 {
-                    $mail->attach(
-                        \Swift_Attachment::fromPath($attachment)->setDisposition('inline')
-                    );
+                    $att = \Swift_Attachment::fromPath($attachment['path'])
+                        ->setDisposition('inline');
+
+                    if(isset($attachment['name']) && !empty($attachment['name']))
+                    {
+                        $att->setFilename($attachment['name']);
+                    }
+
+                    $mail->attach($att);
                 }
             }
-
 
             $result = $mailer->send($mail);
             $response['status'] = 'success';
@@ -103,7 +105,7 @@ class VaahSmtp{
         return $response;
     }
     //----------------------------------------------------------
-    //----------------------------------------------------------
+
     //----------------------------------------------------------
     //----------------------------------------------------------
     //----------------------------------------------------------

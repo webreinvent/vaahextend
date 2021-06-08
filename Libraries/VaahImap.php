@@ -191,13 +191,28 @@ class VaahImap{
 
         $i = 0;
         $result = array();
+
+
+
         foreach ($mail_contact as $key => $item)
         {
 
-            if(!isset($item))
+            if(!isset($item) || empty($item))
             {
                 continue;
             }
+
+            if(!isset($item->host))
+            {
+                continue;
+            }
+
+            if(isset($item->mailbox) && $item->mailbox == 'undisclosed-recipients')
+            {
+                continue;
+            }
+
+
 
             $result[$i]['type'] = $type;
 
@@ -207,7 +222,8 @@ class VaahImap{
                 $result[$i]['name'] = $item->personal;
             }
 
-            if(isset($item->mailbox))
+
+            if(isset($item->mailbox) && isset($item->host))
             {
                 $result[$i]['email'] = $item->mailbox."@".$item->host;
             }
