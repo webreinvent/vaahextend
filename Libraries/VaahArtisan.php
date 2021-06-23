@@ -173,14 +173,13 @@ class VaahArtisan{
     //-------------------------------------------------
     public static function clearCache()
     {
-
         try{
-            \Artisan::call('optimize:clear', self::$params);
-            \Artisan::call('cache:clear', self::$params);
-            \Artisan::call('route:clear', self::$params);
-            \Artisan::call('config:clear', self::$params);
-            \Artisan::call('view:clear', self::$params);
-            \Artisan::call('clear-compiled', self::$params);
+            \Artisan::call('optimize:clear');
+            \Artisan::call('cache:clear');
+            \Artisan::call('route:clear');
+            \Artisan::call('config:clear');
+            \Artisan::call('view:clear');
+            \Artisan::call('clear-compiled');
 
             $response['status'] = 'success';
             $response['data'] = [];
