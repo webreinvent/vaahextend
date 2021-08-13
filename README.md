@@ -184,11 +184,19 @@ $request = [
     ],
     'card' => [
         'number'        => 'xxxx-xxxx-xxxx-xxxx',    
-        'exp_month'     => '01',                        //01-12
+        'exp_month'     => '01',                        // 01-12
         'exp_year'      => '2021',
         'cvc'           => 'xxx',
-    ], 
-    'return_url'   =>  'https://www.google.com/'        // URL to redirect your customer back to after they authenticate or cancel their payment
+    ],
+    'address' => [                                      // optional
+        'city'          => 'xxxxxx',    
+        'country'       => 'xxxxxx',                    
+        'line1'         => 'xxxxxx',
+        'line2'         => 'xxxxxx',
+        'postal_code'   => '123456',
+        'state'         => 'xxxxxx',
+    ],
+    'return_url'   =>  'return_url'                     // URL to redirect your customer back to after they authenticate or cancel their payment
 ];
 
 \VaahStripe::pay($request);
@@ -212,11 +220,19 @@ $request = [
     ],
     'card' => [
         'number'        => 'xxxx-xxxx-xxxx-xxxx',    
-        'exp_month'     => '01',                        //01-12
+        'exp_month'     => '01',                        // 01-12
         'exp_year'      => '2021',
         'cvc'           => 'xxx',
-    ], 
-    'return_url'   =>  'https://www.google.com/'        // URL to redirect your customer back to after they authenticate or cancel their payment
+    ],
+    'address' => [                                      // optional
+        'city'          => 'xxxxxx',    
+        'country'       => 'xxxxxx',                    
+        'line1'         => 'xxxxxx',
+        'line2'         => 'xxxxxx',
+        'postal_code'   => '123456',
+        'state'         => 'xxxxxx',
+    ],
+    'return_url'   =>  'return_url'                     // URL to redirect your customer back to after they authenticate or cancel their payment
 ];
 
 \VaahStripe::subscribe($request);
