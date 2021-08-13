@@ -3,8 +3,6 @@ namespace WebReinvent\VaahExtend\Libraries;
 
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
-use VaahCms\Modules\WebReinvent\Jobs\PaymentMailJob;
-
 
 class VaahStripe{
 
@@ -14,30 +12,14 @@ class VaahStripe{
     public static function pay(Request $request)
     {
 
-        $rules = array(
-            'customer.name' => 'required',
-            'customer.email' => 'required|email:rfc,dns',
-            'payment.currency' => 'required',
-            'payment.amount' => 'required',
-            'payment.description' => 'required',
-            'type' => 'required',
-            'card.number' => 'required',
-            'card.exp_month' => 'required',
-            'card.exp_year' => 'required',
-            'card.cvc' => 'required',
-            'return_url' => 'required'
-        );
-
-        $validator = \Validator::make( $request->all(), $rules);
-        if ( $validator->fails() ) {
-
-            $errors             = errorsToArray($validator->errors());
-            $response['status'] = 'failed';
-            $response['errors'] = $errors;
-            return $response;
-        }
-
         $inputs = $request->all();
+
+        $validate = self::validation($inputs);
+
+        if(isset($validate['status']) && $validate['status'] == 'failed')
+        {
+            return $validate;
+        }
 
         try{
             $customer_inputs = [
@@ -48,6 +30,10 @@ class VaahStripe{
                     'country' => 'US'
                 ]
             ];
+
+            if(isset($inputs['address'])){
+                $customer_inputs['address'] = $inputs['address'];
+            }
 
             // Set Stripe Secret Key
 
@@ -67,7 +53,7 @@ class VaahStripe{
             );
 
             $data = [
-                "type" => $inputs['type'],
+                "type" => 'card',
                 "card" => $inputs['card']
             ];
 
@@ -103,38 +89,18 @@ class VaahStripe{
     public function subscribe(Request $request)
     {
 
-        $rules = array(
-            'customer.name' => 'required',
-            'customer.email' => 'required|email:rfc,dns',
-            'payment.currency' => 'required',
-            'payment.amount' => 'required',
-            'payment.package' => 'required',
-            'payment.interval' => 'required',
-            'type' => 'required',
-            'card.number' => 'required',
-            'card.exp_month' => 'required',
-            'card.exp_year' => 'required',
-            'card.cvc' => 'required',
-            'return_url' => 'required'
-
-        );
-
-        $validator = \Validator::make( $request->all(), $rules);
-        if ( $validator->fails() ) {
-
-            $errors             = errorsToArray($validator->errors());
-            $response['status'] = 'failed';
-            $response['errors'] = $errors;
-            return $response;
-        }
-
         $inputs = $request->all();
+
+        $validate = self::validation($inputs,'subscription');
+
+        if(isset($validate['status']) && $validate['status'] == 'failed')
+        {
+            return $validate;
+        }
 
         $pay_inputs = $inputs['payment'];
 
         $package_price_id = $this->getPriceId($pay_inputs);
-
-        return $package_price_id;
 
         if(is_null($package_price_id) || empty($package_price_id))
         {
@@ -149,21 +115,18 @@ class VaahStripe{
             $customer_inputs = [
                 'email' => $inputs['customer']['email'],
                 'name' => $inputs['customer']['name'],
-                //'address' => $inputs['address']
                 'address' => [
                     'line1' => 'New York',
-                    //'city' => 'New York',
-                    //'state' => 'New York',
-                    //'postal_code' => '10001',
                     'country' => 'US'
                 ]
             ];
 
-            // Set Stripe Secret Key
-            //config(['services.stripe.secret' => config('settings.global.stripe_secret_key_test')]);
+            if($inputs['address']){
+                $customer_inputs['address'] = $inputs['address'];
+            }
 
             $token = Stripe::tokens()->create([
-                'card' =>  $inputs['card']['card'],
+                'card' =>  $inputs['card'],
             ]);
 
             $customer_inputs['source'] = $token['id'];
@@ -171,7 +134,10 @@ class VaahStripe{
 
             $customer = Stripe::customers()->create($customer_inputs);
 
-            $method_inputs = $inputs['card'];
+            $method_inputs = [
+                "type" => 'card',
+                "card" => $inputs['card']
+            ];
 
             $paymentMethod = Stripe::paymentMethods()->create($method_inputs);
 
@@ -201,18 +167,12 @@ class VaahStripe{
 
             $customer = Stripe::customers()->find($payIntent['customer']);
 
-            $this->sendPaymentMail($payIntent,$customer);
-
             $response['status'] = 'success';
             $response['data'] = $payIntent;
             $response['customer'] = $customer;
 
         }catch(\Exception $e)
         {
-
-            dispatch(new PaymentMailJob([$e->getMessage()],
-                $request->all(), 'Stripe Subscription Attempt',
-                'payment-attempt'));
 
             $response['status'] = 'failed';
             $response['errors'][] = $e->getMessage();
@@ -232,17 +192,18 @@ class VaahStripe{
         $plans = Stripe::plans()->all($data);
 
         foreach ($plans['data'] as $plan){
+
             if($plan['name'] == $package['package']
             && $plan['interval'] == $package['interval']
-            && $plan['amount'] == $package['amount']
-            && $plan['currency'] == $package['currency']){
-                return $plan;
+            && $plan['currency'] == strtolower($package['currency'])){
+                return $plan['id'];
             }
         }
 
         $product = Stripe::products()->create([
             'name' => $package['package'],
             'description' => $package['description'],
+            'type' => 'service'
         ]);
 
         $package['product'] = $product['id'];
@@ -252,7 +213,38 @@ class VaahStripe{
 
         $plan = Stripe::plans()->create($package);
 
-        return $plan;
+        return $plan['id'];
+    }
+    //----------------------------------------------------------
+    public static function validation($inputs,$type = null){
+
+        $rules = array(
+            'customer.name' => 'required',
+            'customer.email' => 'required|email:rfc,dns',
+            'payment.currency' => 'required',
+            'payment.amount' => 'required',
+            'payment.description' => 'required',
+            'card.number' => 'required',
+            'card.exp_month' => 'required',
+            'card.exp_year' => 'required',
+            'card.cvc' => 'required',
+            'return_url' => 'required'   // URL to redirect your customer back to after they authenticate or cancel their payment
+        );
+
+        if($type === 'subscription'){
+            $rules['payment.package'] = 'required';
+            $rules['payment.interval'] = 'required';
+        }
+
+        $validator = \Validator::make( $inputs, $rules);
+        if ( $validator->fails() ) {
+
+            $errors             = errorsToArray($validator->errors());
+            $response['status'] = 'failed';
+            $response['errors'] = $errors;
+            return $response;
+        }
+
     }
     //----------------------------------------------------------
 
