@@ -91,7 +91,7 @@ Add Facade in `config/app.php`:
 \VaahModule::getNamespace($module_name);
 \VaahModule::getServiceProvider($module_name);
 ```
----
+
 
 ### VaahEventBrite
 
@@ -141,6 +141,86 @@ $event = [
 \VaahEventBrite::attendees()->find($event_id, $attendee_id);
 \VaahEventBrite::orders()->find($order_id);
 \VaahEventBrite::organizations()->get();
+```
+
+
+### VaahStripe
+
+Add Facade in `config/app.php`:
+```php
+'aliases' => [
+...
+'VaahStripe' => WebReinvent\VaahExtend\Facades\VaahStripe::class,
+...
+]
+```
+
+Add env configuration:
+```
+
+...
+STRIPE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+...
+
+```
+
+Reference url: https://stripe.com/docs/api
+
+**Method**
+
+- Stripe One Time Payment
+
+```php
+
+$request = [
+    'customer' => [
+        'name'   => 'xxxxxx',
+        'email'  => 'xx@example.com',
+    ],
+    'payment' => [
+        'currency'      => 'usd',                       // usd / USD
+        'amount'        => '00',
+        'description'   => 'xxxxxx',
+    ],
+    'card' => [
+        'number'        => 'xxxx-xxxx-xxxx-xxxx',    
+        'exp_month'     => '01',                        //01-12
+        'exp_year'      => '2021',
+        'cvc'           => 'xxx',
+    ], 
+    'return_url'   =>  'https://www.google.com/'        // URL to redirect your customer back to after they authenticate or cancel their payment
+];
+
+\VaahStripe::pay($request);
+
+```
+
+- Stripe Subscription
+```php
+
+$request = [
+    'customer' => [
+        'name'   => 'xxxxxx',
+        'email'  => 'xx@example.com',
+    ],
+    'payment' => [
+        'currency'      => 'usd',                       // usd / USD
+        'amount'        => '00',
+        'package'       => 'xxxxxx',                    // package_name
+        'description'   => 'xxxxxx',
+        'interval   '   => 'xxxxxx',                    // day, week, month or year
+    ],
+    'card' => [
+        'number'        => 'xxxx-xxxx-xxxx-xxxx',    
+        'exp_month'     => '01',                        //01-12
+        'exp_year'      => '2021',
+        'cvc'           => 'xxx',
+    ], 
+    'return_url'   =>  'https://www.google.com/'        // URL to redirect your customer back to after they authenticate or cancel their payment
+];
+
+\VaahStripe::subscribe($request);
+
 ```
 
 ### VaahCountry
