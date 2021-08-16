@@ -9,12 +9,15 @@ class VaahStripe{
     //----------------------------------------------------------
     //----------------------------------------------------------
 
-    public static function pay(Request $request)
+    public static function pay($customer,
+                               $card,
+                               $package,
+                               $address,
+                               $return_url)
     {
 
-        $inputs = $request->all();
-
-        $validate = self::validation($inputs);
+        $validate = self::validation($customer,
+            $card, $address,null, $return_url, $package);
 
         if(isset($validate['status']) && $validate['status'] == 'failed')
         {
@@ -23,38 +26,30 @@ class VaahStripe{
 
         try{
             $customer_inputs = [
-                'email' => $inputs['customer']['email'],
-                'name' => $inputs['customer']['name'],
-                'address' => [
-                    'line1' => 'New York',
-                    'country' => 'US'
-                ]
+                'email'     => $customer['email'],
+                'name'      => $customer['name'],
+                'address'   => $address
             ];
-
-            if(isset($inputs['address'])){
-                $customer_inputs['address'] = $inputs['address'];
-            }
 
             // Set Stripe Secret Key
 
             $customer = Stripe::customers()
                 ->create($customer_inputs);
 
-            $pay_inputs = $inputs['payment'];
+            $pay_inputs = $package;
             $pay_inputs['customer'] = $customer['id'];
-
 
             $pay_intent = Stripe::paymentIntents()
                 ->create($pay_inputs);
 
 
-            $inputs['card']['number'] = str_replace(
-                '-', '', $inputs['card']['number']
+            $card['number'] = str_replace(
+                '-', '', $card['number']
             );
 
             $data = [
                 "type" => 'card',
-                "card" => $inputs['card']
+                "card" => $card
             ];
 
 
@@ -68,7 +63,7 @@ class VaahStripe{
             $pay_confirm = Stripe::paymentIntents()->confirm(
                 $pay_intent['id'],
                 [
-                    "return_url" => $inputs['return_url']
+                    "return_url" => $return_url
                 ]
             );
 
@@ -86,70 +81,58 @@ class VaahStripe{
 
     }
     //----------------------------------------------------------
-    public function subscribe(Request $request)
+
+    public function subscription($customer,
+                                 $card,
+                                 $address,
+                                 $price_id,
+                                 $return_url)
     {
 
-        $inputs = $request->all();
-
-        $validate = self::validation($inputs,'subscription');
+        $validate = self::validation($customer,
+            $card, $address, $price_id, $return_url, null,true);
 
         if(isset($validate['status']) && $validate['status'] == 'failed')
         {
             return $validate;
         }
 
-        $pay_inputs = $inputs['payment'];
-
-        $package_price_id = $this->getPriceId($pay_inputs);
-
-        if(is_null($package_price_id) || empty($package_price_id))
-        {
-            $response = [
-                "status" => 'failed',
-                "errors" => ['Plan or plan price for '.$pay_inputs['package']." does not exist"],
-            ];
-            return $response;
-        }
-
         try{
+
             $customer_inputs = [
-                'email' => $inputs['customer']['email'],
-                'name' => $inputs['customer']['name'],
-                'address' => [
-                    'line1' => 'New York',
-                    'country' => 'US'
-                ]
+                'email'     => $customer['email'],
+                'name'      => $customer['name'],
+                'address'   => $address
             ];
 
-            if($inputs['address']){
-                $customer_inputs['address'] = $inputs['address'];
-            }
+            $card['number'] = str_replace(
+                '-', '', $card['number']
+            );
 
             $token = Stripe::tokens()->create([
-                'card' =>  $inputs['card'],
+                'card' =>  $card,
             ]);
 
             $customer_inputs['source'] = $token['id'];
-
 
             $customer = Stripe::customers()->create($customer_inputs);
 
             $method_inputs = [
                 "type" => 'card',
-                "card" => $inputs['card']
+                "card" => $card
             ];
 
-            $paymentMethod = Stripe::paymentMethods()->create($method_inputs);
+            $payment_method = Stripe::paymentMethods()->create($method_inputs);
 
-            $customerID = $customer['id'];
-            $paymentMethodID = $paymentMethod['id'];
+            $customer_iD = $customer['id'];
+            $payment_method_iD = $payment_method['id'];
 
-            Stripe::paymentMethods()->attach($paymentMethodID, $customerID);
+            Stripe::paymentMethods()->attach($payment_method_iD, $customer_iD);
 
             $subscription = Stripe::subscriptions()->create(
-                $customerID,
+                $customer_iD,
                 [
-                    'plan' => $package_price_id,
+                    'plan' => $price_id,
                     'payment_behavior' => 'default_incomplete',
                     'expand' => ['latest_invoice.payment_intent'],
                 ]
@@ -158,22 +141,19 @@ class VaahStripe{
             $invoice = Stripe::invoices()->find($subscription['latest_invoice']['id']);
 
 
-            $payIntent = Stripe::paymentIntents()->confirm(
+            $pa_intent = Stripe::paymentIntents()->confirm(
                 $invoice['payment_intent'],
                 [
-                    "return_url" => $inputs['return_url']
+                    "return_url" => $return_url
                 ]
             );
 
-            $customer = Stripe::customers()->find($payIntent['customer']);
-
             $response['status']     = 'success';
-            $response['data']       = $payIntent;
-            $response['customer']   = $customer;
+            $response['data']       = $pa_intent;
+
 
         }catch(\Exception $e)
         {
-
             $response['status']     = 'failed';
             $response['errors'][]   = $e->getMessage();
         }
@@ -316,88 +296,146 @@ class VaahStripe{
     }
     //----------------------------------------------------------
 
-    public function createPackage(Request $request)
+    public function findPriceByProductId($product_id, $by = null, $value = null)
     {
-        $inputs = $request->all();
 
-        $data = [
-            'active' => true
-        ];
-
-        $plans = Stripe::plans()->all($data);
-
-        foreach ($plans['data'] as $plan){
-
-            if($plan['name'] == $inputs['name']){
-                return $plan['id'];
-            }
+        if(!$product_id){
+            $response['status'] = 'failed';
+            $response['errors'] = 'The product id field is required.';
+            return $response;
         }
 
-        $product = Stripe::products()->create([
-            'name' => $package['package'],
-            'description' => $package['description'],
-            'type' => 'service'
-        ]);
+        try{
 
-        $package['product'] = $product['id'];
+            $price_val  = null;
 
-        unset($package['package']);
-        unset($package['description']);
+            $data = [
+                'active' => true
+            ];
 
-        $plan = Stripe::plans()->create($package);
+            $prices = Stripe::prices()->all($data);
 
-        return $plan['id'];
+            foreach ($prices['data'] as $price){
+
+                if($price['product'] == $product_id){
+                    if($value && $by){
+                        if($by == 'amount'
+                            && $price['unit_amount'] == $value){
+                            $price_val =  $price;
+                        }elseif($by == 'currency'
+                            && $price['currency'] == strtolower($value)){
+                            $price_val =  $price;
+                        }elseif($by == 'interval'
+                            && $price['recurring'][$by] == $value){
+                            $price_val =  $price;
+                        }
+                    }else{
+                        $price_val =  $price;
+                    }
+                }
+
+            }
+
+            if(!$price_val){
+                $response['status']     = 'failed';
+                $response['errors'][]   = 'No Price Found';
+                return $response;
+            }
+
+            $response['status'] = 'success';
+            $response['data']   = $price_val;
+
+
+        }catch(\Exception $e)
+        {
+            $response['status']     = 'failed';
+            $response['errors'][]   = $e->getMessage();
+        }
+
+        return $response;
+
     }
     //----------------------------------------------------------
 
-    public function getPriceId($package)
-    {
-        $data = [
-            'active' => true
-        ];
-
-        $plans = Stripe::plans()->all($data);
-
-        $price_id = null;
-
-        foreach ($plans['data'] as $plan){
-
-            if($plan['name'] == $package['package']
-            && $plan['interval'] == $package['interval']
-            && $plan['currency'] == strtolower($package['currency'])){
-                $price_id = $plan['id'];
-            }
-        }
-
-        return $price_id;
-    }
     //----------------------------------------------------------
-    public static function validation($inputs,$type = null){
+    public static function validation($customer,
+                                      $card,
+                                      $address,
+                                      $price_id,
+                                      $return_url,
+                                      $package,
+                                      $is_subscription = false){
 
         $rules = array(
-            'customer.name' => 'required',
-            'customer.email' => 'required|email:rfc,dns',
-            'payment.currency' => 'required',
-            'payment.amount' => 'required',
-            'payment.description' => 'required',
-            'card.number' => 'required',
-            'card.exp_month' => 'required',
-            'card.exp_year' => 'required',
-            'card.cvc' => 'required',
-            'return_url' => 'required'   // URL to redirect your customer back to after they authenticate or cancel their payment
+            'name'    => 'required',
+            'email'   => 'required|email:rfc,dns'
         );
 
-        if($type === 'subscription'){
-            $rules['payment.package'] = 'required';
-            $rules['payment.interval'] = 'required';
-        }
-
-        $validator = \Validator::make( $inputs, $rules);
+        $validator = \Validator::make( $customer, $rules);
         if ( $validator->fails() ) {
 
             $errors             = errorsToArray($validator->errors());
             $response['status'] = 'failed';
             $response['errors'] = $errors;
+            return $response;
+        }
+
+        $rules = array(
+            'number'       => 'required',
+            'exp_month'    => 'required',
+            'exp_year'     => 'required',
+            'cvc'          => 'required'
+        );
+
+        $validator = \Validator::make( $card, $rules);
+        if ( $validator->fails() ) {
+
+            $errors             = errorsToArray($validator->errors());
+            $response['status'] = 'failed';
+            $response['errors'] = $errors;
+            return $response;
+        }
+
+        if(!$is_subscription && $package){
+            $rules = array(
+                'currency'      => 'required',
+                'amount'        => 'required',
+                'description'   => 'required'
+            );
+
+            $validator = \Validator::make( $package, $rules);
+            if ( $validator->fails() ) {
+
+                $errors             = errorsToArray($validator->errors());
+                $response['status'] = 'failed';
+                $response['errors'] = $errors;
+                return $response;
+            }
+        }
+
+        $rules = array(
+            'line1'         => 'required',
+            'country'       => 'required',
+        );
+
+        $validator = \Validator::make( $address, $rules);
+        if ( $validator->fails() ) {
+
+            $errors             = errorsToArray($validator->errors());
+            $response['status'] = 'failed';
+            $response['errors'] = $errors;
+            return $response;
+        }
+
+        if($is_subscription && !$price_id){
+            $response['status'] = 'failed';
+            $response['errors'] = 'The price id field is required.';
+            return $response;
+        }
+
+        if(!$return_url){
+            $response['status'] = 'failed';
+            $response['errors'] = 'The price id field is required.';
             return $response;
         }
 
