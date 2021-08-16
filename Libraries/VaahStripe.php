@@ -296,7 +296,7 @@ class VaahStripe{
     }
     //----------------------------------------------------------
 
-    public function findPriceByProductId($product_id, $by = null, $value = null)
+    public function getProductPrice($product_id, $by = null, $value = null)
     {
 
         if(!$product_id){
