@@ -168,74 +168,119 @@ Reference url: https://stripe.com/docs/api
 
 **Method**
 
-- Stripe One Time Payment
+- Stripe One Time Payment 
 
-```php
+```
 
-$request = [
-    'customer' => [
+    $customer => [
         'name'   => 'xxxxxx',
-        'email'  => 'xx@example.com',
-    ],
-    'payment' => [
-        'currency'      => 'usd',                       // usd / USD
-        'amount'        => '00',
-        'description'   => 'xxxxxx',
-    ],
-    'card' => [
+        'email'  => 'xx@example.com'
+    ];
+    
+    $card => [
         'number'        => 'xxxx-xxxx-xxxx-xxxx',    
         'exp_month'     => '01',                        // 01-12
         'exp_year'      => '2021',
-        'cvc'           => 'xxx',
-    ],
-    'address' => [                                      // optional
-        'city'          => 'xxxxxx',    
-        'country'       => 'xxxxxx',                    
-        'line1'         => 'xxxxxx',
-        'line2'         => 'xxxxxx',
-        'postal_code'   => '123456',
-        'state'         => 'xxxxxx',
-    ],
-    'return_url'   =>  'return_url'                     // URL to redirect your customer back to after they authenticate or cancel their payment
-];
+        'cvc'           => 'xxx'
+    ];
+    
+    $package => [
+        'currency'      => 'usd',                       // usd / USD
+        'amount'        => '01',
+        'description'   => 'xxxxxx'
+    ];
+    
+    $address => [
+        'city'          => 'xxxxxx',                    // optional    
+        'country'       => 'xxxxxx',                                   
+        'line1'         => 'xxxxxx',                    
+        'line2'         => 'xxxxxx',                    // optional
+        'postal_code'   => '123456',                    // optional
+        'state'         => 'xxxxxx'                     // optional
+    ];
+    
+    $return_url    // URL to redirect your customer back to after they authenticate or cancel their payment
 
-\VaahStripe::pay($request);
+    \VaahStripe::pay($customer, $card, $package, $address, $return_url);
 
 ```
 
 - Stripe Subscription
 ```php
 
-$request = [
-    'customer' => [
+    $customer => [
         'name'   => 'xxxxxx',
-        'email'  => 'xx@example.com',
-    ],
-    'payment' => [
-        'currency'      => 'usd',                       // usd / USD
-        'amount'        => '00',
-        'package'       => 'xxxxxx',                    // package_name
-        'description'   => 'xxxxxx',
-        'interval   '   => 'xxxxxx',                    // day, week, month or year
-    ],
-    'card' => [
+        'email'  => 'xx@example.com'
+    ];
+    
+    $card => [
         'number'        => 'xxxx-xxxx-xxxx-xxxx',    
         'exp_month'     => '01',                        // 01-12
         'exp_year'      => '2021',
-        'cvc'           => 'xxx',
-    ],
-    'address' => [                                      // optional
-        'city'          => 'xxxxxx',    
-        'country'       => 'xxxxxx',                    
-        'line1'         => 'xxxxxx',
-        'line2'         => 'xxxxxx',
-        'postal_code'   => '123456',
-        'state'         => 'xxxxxx',
-    ],
-    'return_url'   =>  'return_url'                     // URL to redirect your customer back to after they authenticate or cancel their payment
-];
+        'cvc'           => 'xxx'
+    ];
+    
+    $address => [
+        'city'          => 'xxxxxx',                    // optional    
+        'country'       => 'xxxxxx',                                   
+        'line1'         => 'xxxxxx',                    
+        'line2'         => 'xxxxxx',                    // optional
+        'postal_code'   => '123456',                    // optional
+        'state'         => 'xxxxxx'                     // optional
+    ];
 
-\VaahStripe::subscribe($request);
+    $price_id      // Price define the unit cost, currency, and (optional) billing cycle for Subcription   
+    
+    $return_url    // URL to redirect your customer back to after they authenticate or cancel their payment
+
+    \VaahStripe::subscription($customer, $card, $address, $price_id, $return_url);
+
+```
+
+- Create Product
+```php
+
+    $request => [
+        'name'          => 'xxxxxx',
+        'description'   => 'xxxxxx'
+    ];
+    
+    \VaahStripe::createProduct($request);
+
+```
+
+- Create Price
+```php
+
+    $request => [
+        'product_id'    => 'xxxxxx',
+        'currency'      => 'usd',
+        'amount'        => '01',
+        'interval'      => '01'
+       
+    ];
+    
+    \VaahStripe::createPrice($request);
+
+```
+
+- Find Product
+```php
+    
+    \VaahStripe::findProductByName($name);
+
+```
+
+- Find Price
+```php
+
+    $product_id    
+    
+    $by             //optional    amount/currency/interval
+    
+    $value          //optional
+    
+    \VaahStripe::findPriceByProductId($product_id, $by, $value);
 
 ```
 
