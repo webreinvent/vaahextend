@@ -319,16 +319,6 @@ class VaahStripe{
 
                 if($price['product'] == $product_id){
                     if($value && $by){
-                        if($by == 'amount'
-                            && $price['unit_amount'] == $value){
-                            $price_val =  $price;
-                        }elseif($by == 'currency'
-                            && $price['currency'] == strtolower($value)){
-                            $price_val =  $price;
-                        }elseif($by == 'interval'
-                            && $price['recurring'][$by] == $value){
-                            $price_val =  $price;
-                        }
 
                         switch ($by)
                         {

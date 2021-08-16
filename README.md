@@ -146,6 +146,13 @@ $event = [
 
 ### VaahStripe
 
+Command to add Package:
+
+```
+composer require cartalyst/stripe-laravel
+```
+- https://github.com/cartalyst/stripe-laravel
+
 Add Facade in `config/app.php`:
 ```php
 'aliases' => [
@@ -276,11 +283,11 @@ Reference url: https://stripe.com/docs/api
 
     $product_id    
     
-    $by             //optional    amount/currency/interval
-    
     $value          //optional
     
-    \VaahStripe::findPriceByProductId($product_id, $by, $value);
+    $by             //optional       default = amount       amount/currency/interval
+    
+    \VaahStripe::getProductPrice($product_id, $value, $by);
 
 ```
 
