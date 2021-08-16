@@ -167,15 +167,15 @@ class VaahStripe{
 
             $customer = Stripe::customers()->find($payIntent['customer']);
 
-            $response['status'] = 'success';
-            $response['data'] = $payIntent;
-            $response['customer'] = $customer;
+            $response['status']     = 'success';
+            $response['data']       = $payIntent;
+            $response['customer']   = $customer;
 
         }catch(\Exception $e)
         {
 
-            $response['status'] = 'failed';
-            $response['errors'][] = $e->getMessage();
+            $response['status']     = 'failed';
+            $response['errors'][]   = $e->getMessage();
         }
 
         return $response;
@@ -183,8 +183,95 @@ class VaahStripe{
     }
     //----------------------------------------------------------
 
-    public function getPriceId($package)
+    public function createProduct(Request $request)
     {
+        $inputs = $request->all();
+
+        $rules = array(
+            'name'          => 'required',
+            'description'   => 'required'
+        );
+
+        $validator = \Validator::make( $inputs, $rules);
+        if ( $validator->fails() ) {
+
+            $errors             = errorsToArray($validator->errors());
+            $response['status'] = 'failed';
+            $response['errors'] = $errors;
+            return $response;
+        }
+
+        try{
+
+            $product = Stripe::products()->create([
+                'name'          => $inputs['name'],
+                'description'   => $inputs['description'],
+                'type'          => 'service'
+            ]);
+
+            $response['status'] = 'success';
+            $response['data']   = $product;
+
+        }catch(\Exception $e)
+        {
+            $response['status']     = 'failed';
+            $response['errors'][]   = $e->getMessage();
+        }
+
+        return $response;
+
+    }
+    //----------------------------------------------------------
+
+    public function createPrice(Request $request)
+    {
+        $inputs = $request->all();
+
+        $rules = array(
+            'product_id'    => 'required',
+            'amount'        => 'required',
+            'currency'      => 'required',
+            'interval'      => 'required'
+        );
+
+        $validator = \Validator::make( $inputs, $rules);
+        if ( $validator->fails() ) {
+
+            $errors             = errorsToArray($validator->errors());
+            $response['status'] = 'failed';
+            $response['errors'] = $errors;
+            return $response;
+        }
+
+        try{
+
+            $product = Stripe::prices()->create([
+                'unit_amount'   => $inputs['amount'],
+                'currency'      => $inputs['currency'],
+                'product'       => $inputs['product_id'],
+                'recurring'     => [
+                    'interval'  => $inputs['interval']
+                ]
+            ]);
+
+            $response['status'] = 'success';
+            $response['data']   = $product;
+
+        }catch(\Exception $e)
+        {
+            $response['status']     = 'failed';
+            $response['errors'][]   = $e->getMessage();
+        }
+
+        return $response;
+
+    }
+    //----------------------------------------------------------
+
+    public function createPackage(Request $request)
+    {
+        $inputs = $request->all();
+
         $data = [
             'active' => true
         ];
@@ -193,9 +280,7 @@ class VaahStripe{
 
         foreach ($plans['data'] as $plan){
 
-            if($plan['name'] == $package['package']
-            && $plan['interval'] == $package['interval']
-            && $plan['currency'] == strtolower($package['currency'])){
+            if($plan['name'] == $inputs['name']){
                 return $plan['id'];
             }
         }
@@ -214,6 +299,29 @@ class VaahStripe{
         $plan = Stripe::plans()->create($package);
 
         return $plan['id'];
+    }
+    //----------------------------------------------------------
+
+    public function getPriceId($package)
+    {
+        $data = [
+            'active' => true
+        ];
+
+        $plans = Stripe::plans()->all($data);
+
+        $price_id = null;
+
+        foreach ($plans['data'] as $plan){
+
+            if($plan['name'] == $package['package']
+            && $plan['interval'] == $package['interval']
+            && $plan['currency'] == strtolower($package['currency'])){
+                $price_id = $plan['id'];
+            }
+        }
+
+        return $price_id;
     }
     //----------------------------------------------------------
     public static function validation($inputs,$type = null){
