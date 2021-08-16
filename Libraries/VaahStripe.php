@@ -296,7 +296,7 @@ class VaahStripe{
     }
     //----------------------------------------------------------
 
-    public function getProductPrice($product_id, $by = null, $value = null)
+    public function getProductPrice($product_id, $value = null, $by = 'amount')
     {
 
         if(!$product_id){
@@ -329,6 +329,39 @@ class VaahStripe{
                             && $price['recurring'][$by] == $value){
                             $price_val =  $price;
                         }
+
+                        switch ($by)
+                        {
+                            //------------------------------------
+                            case 'amount':
+
+                                if($price['unit_amount'] == $value){
+                                    $price_val =  $price;
+                                }
+
+                                break;
+
+                            //------------------------------------
+                            case 'currency':
+
+                                if($price[$by] == $value){
+                                    $price_val =  $price;
+                                }
+
+                                break;
+
+                            //------------------------------------
+                            case 'interval':
+
+                                if($price['recurring'][$by] == $value){
+                                    $price_val =  $price;
+                                }
+
+                                break;
+                            //------------------------------------
+
+                        }
+
                     }else{
                         $price_val =  $price;
                     }
