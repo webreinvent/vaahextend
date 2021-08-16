@@ -268,6 +268,54 @@ class VaahStripe{
     }
     //----------------------------------------------------------
 
+    public function findProductByName($name)
+    {
+
+        if(!$name){
+            $response['status'] = 'failed';
+            $response['errors'] = 'The name field is required.';
+            return $response;
+        }
+
+        try{
+
+            $product_val  = null;
+
+            $data = [
+                'active' => true
+            ];
+
+            $products = Stripe::products()->all($data);
+
+            foreach ($products['data'] as $product){
+
+                if($product['name'] == $name){
+                    $product_val =  $product;
+                }
+
+            }
+
+            if(!$product_val){
+                $response['status']     = 'failed';
+                $response['errors'][]   = 'No Product Found';
+                return $response;
+            }
+
+            $response['status'] = 'success';
+            $response['data']   = $product_val;
+
+
+        }catch(\Exception $e)
+        {
+            $response['status']     = 'failed';
+            $response['errors'][]   = $e->getMessage();
+        }
+
+        return $response;
+
+    }
+    //----------------------------------------------------------
+
     public function createPackage(Request $request)
     {
         $inputs = $request->all();
