@@ -1,11 +1,27 @@
 # VaahStripe
+> Small Laravel Helpers
 
-Command to add Package:
+### Installation
 
-```
+VaahStripe provides an expressive, fluent interface to Stripe's One Time Payment 
+and subscription billing services. 
+
+For extra fraud protection, 3D Secure (3DS) requires customers to complete an 
+additional verification step with the card issuer when paying. 
+Typically, you direct the customer to an authentication page on their bank’s 
+website, and they enter a password associated with the card or a 
+code sent to their phone. This process is familiar to customers 
+through the card networks’ brand names, such as Visa Secure and 
+Mastercard Identity Check.
+
+### Dependencies
+- [STRIPE BY CARTALYST](https://github.com/cartalyst/stripe-laravel)
+
+### Installation
+
+```shell script
 composer require cartalyst/stripe-laravel
 ```
-- https://github.com/cartalyst/stripe-laravel
 
 Add Facade in `config/app.php`:
 ```php
@@ -27,7 +43,7 @@ STRIPE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Reference url: https://stripe.com/docs/api
 
-**Method**
+### Methods
 
 - Stripe One Time Payment 
 
