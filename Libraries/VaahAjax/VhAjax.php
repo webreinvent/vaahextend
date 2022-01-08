@@ -1,10 +1,10 @@
 <?php
-namespace WebReinvent\VaahExtend\Libraries;
+namespace WebReinvent\VaahExtend\Libraries\VaahAjax;
 
 
 use GuzzleHttp\Client;
 
-class VaahAjax{
+class VhAjax{
 
     public $ajax;
 

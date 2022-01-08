@@ -1,7 +1,7 @@
-<?php namespace WebReinvent\VaahExtend\Libraries;
+<?php namespace WebReinvent\VaahExtend\Libraries\VaahModule;
 
 
-class VaahModule{
+class VhModule{
 
 
     //-----------------------------------------------------------------------------------

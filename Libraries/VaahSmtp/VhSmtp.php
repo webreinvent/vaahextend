@@ -1,5 +1,5 @@
 <?php
-namespace WebReinvent\VaahExtend\Libraries;
+namespace WebReinvent\VaahExtend\Libraries\VaahSmtp;
 
 use \Swift_Mailer;
 use Swift_Message;
@@ -7,7 +7,7 @@ use \Swift_SmtpTransport as SmtpTransport;
 use Swift_SmtpTransport;
 
 
-class VaahSmtp{
+class VhSmtp{
 
     public $hostname;
     public $username;

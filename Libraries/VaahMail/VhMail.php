@@ -1,5 +1,5 @@
 <?php
-namespace WebReinvent\VaahExtend\Libraries;
+namespace WebReinvent\VaahExtend\Libraries\VaahMail;
 
 use WebReinvent\VaahCms\Entities\User;
 use WebReinvent\VaahCms\Jobs\ProcessMails;
@@ -8,7 +8,7 @@ use WebReinvent\VaahCms\Notifications\TestSmtp;
 use Illuminate\Support\Facades\Notification;
 
 
-class VaahMail{
+class VhMail{
 
     //----------------------------------------------------------
     //----------------------------------------------------------

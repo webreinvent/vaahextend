@@ -1,8 +1,8 @@
 <?php
-namespace WebReinvent\VaahExtend\Libraries;
+namespace WebReinvent\VaahExtend\Libraries\VaahImap;
 
 
-class VaahImap{
+class VhImap{
 
     public $mailbox;
     public $username;

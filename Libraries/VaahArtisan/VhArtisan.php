@@ -1,7 +1,7 @@
-<?php namespace WebReinvent\VaahExtend\Libraries;
+<?php namespace WebReinvent\VaahExtend\Libraries\VaahArtisan;
 
 
-class VaahArtisan{
+class VhArtisan{
 
     static $params;
     static $command;

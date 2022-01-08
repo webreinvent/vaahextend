@@ -33,37 +33,37 @@ class VaahExtendServiceProvider extends ServiceProvider {
 
 
         App::bind('vaahartisan',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahArtisan();
+            return new \WebReinvent\VaahExtend\Libraries\VaahArtisan\VhArtisan();
         });
 
 
         App::bind('vaahassets',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahAssets();
+            return new \WebReinvent\VaahExtend\Libraries\VaahAssets\VhAssets();
         });
 
 
         App::bind('vaahcountry',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahCountry();
+            return new \WebReinvent\VaahExtend\Libraries\VaahCountry\VhCountry();
         });
 
         App::bind('vaahfile',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahFiles();
+            return new \WebReinvent\VaahExtend\Libraries\VaahFiles\VhFiles();
         });
 
         App::bind('vaahmail',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahMail();
+            return new \WebReinvent\VaahExtend\Libraries\VaahMail\VhMail();
         });
 
         App::bind('vaahimap',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahImap();
+            return new \WebReinvent\VaahExtend\Libraries\VaahImap\VhImap();
         });
 
         App::bind('vaahmodule',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahModule();
+            return new \WebReinvent\VaahExtend\Libraries\VaahModule\VhModule();
         });
 
         App::bind('vaahurl',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahUrl();
+            return new \WebReinvent\VaahExtend\Libraries\VaahUrl\VhUrl();
         });
 
         App::bind('vaaheventbrite',function() {
@@ -71,11 +71,11 @@ class VaahExtendServiceProvider extends ServiceProvider {
         });
 
         App::bind('vaahextract',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahExtract();
+            return new \WebReinvent\VaahExtend\Libraries\VaahExtract\VhExtract();
         });
 
         App::bind('vaahajax',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahAjax();
+            return new \WebReinvent\VaahExtend\Libraries\VaahAjax\VhAjax();
         });
 
         App::bind('vaahstripe',function() {

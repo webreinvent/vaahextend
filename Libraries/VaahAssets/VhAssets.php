@@ -1,7 +1,7 @@
-<?php namespace WebReinvent\VaahExtend\Libraries;
+<?php namespace WebReinvent\VaahExtend\Libraries\VaahAssets;
 
 
-class VaahAssets{
+class VhAssets{
 
     //-------------------------------------------------
     public function getStopWords()

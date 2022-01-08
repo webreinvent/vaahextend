@@ -1,7 +1,7 @@
-<?php namespace WebReinvent\VaahExtend\Libraries;
+<?php namespace WebReinvent\VaahExtend\Libraries\VaahCountry;
 
 
-class VaahCountry{
+class VhCountry{
 
     //-------------------------------------------------
     public static function getByCode($country_code)
