@@ -79,7 +79,7 @@ class VaahExtendServiceProvider extends ServiceProvider {
         });
 
         App::bind('vaahstripe',function() {
-            return new \WebReinvent\VaahExtend\Libraries\VaahStripe();
+            return new \WebReinvent\VaahExtend\Libraries\VaahStripe\VhStripe();
         });
 
 

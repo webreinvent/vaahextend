@@ -1,10 +1,10 @@
 <?php
-namespace WebReinvent\VaahExtend\Libraries;
+namespace WebReinvent\VaahExtend\Libraries\VaahStripe;
 
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
 use Illuminate\Http\Request;
 
-class VaahStripe{
+class VhStripe{
 
     //----------------------------------------------------------
     //----------------------------------------------------------
