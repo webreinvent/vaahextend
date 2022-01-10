@@ -458,7 +458,7 @@ class VaahStripe{
 
         if(!$return_url){
             $response['status'] = 'failed';
-            $response['errors'] = 'The price id field is required.';
+            $response['errors'] = 'The return url field is required.';
             return $response;
         }
 
