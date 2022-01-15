@@ -16,7 +16,21 @@ WebReinvent\VaahExtend\VaahExtendServiceProvider::class,
 ```
 ---
 
-- [VaahAjax](Libraries/VAAHAJAX.md)
+### Helper Libraries
+
+- [VaahAjax](Libraries/VaahAjax.md)
+- [VaahArtisan](Libraries/VaahArtisan.md)
+- [VaahAssets](Libraries/VaahAssets.md)
+- [VaahCountry](Libraries/VaahCountry.md)
+- [VaahExtract](Libraries/VaahExtract.md)
+- [VaahFiles](Libraries/VaahFiles.md)
+- [VaahImap](Libraries/VaahImap.md)
+- [VaahMail](Libraries/VaahMail.md)
+- [VaahModule](Libraries/VaahModule.md)
+- [VaahSmtp](Libraries/VaahSmtp.md)
+- [VaahStripe](Libraries/VaahStripe.md)
+- [VaahUrl](Libraries/VaahUrl.md)
+
 
 
 ### VaahArtisan
