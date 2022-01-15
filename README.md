@@ -16,6 +16,9 @@ WebReinvent\VaahExtend\VaahExtendServiceProvider::class,
 ```
 ---
 
+- [VaahAjax](Libraries/VAAHAJAX.md)
+
+
 ### VaahArtisan
 
 Add Facade in `config/app.php`:
