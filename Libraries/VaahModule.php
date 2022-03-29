@@ -134,19 +134,19 @@ class VaahModule{
 //-----------------------------------------------------------------------------------
     public static function getTenantMigrationPath($module_name)
     {
-        $path =config('vaahcms.modules_path')."/".$module_name."/Database/Migrations/Tenants";
+        $path =config('vaahcms.modules_path')."/".$module_name."/Database/Migrations/Tenant";
         $path = str_replace(base_path()."/", "", $path);
         return $path;
     }
 //-----------------------------------------------------------------------------------
     public static function getTenantSeedsClass($module_name)
     {
-        return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\DatabaseTableSeeder";
+        return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenant\\DatabaseTableSeeder";
     }
 //-----------------------------------------------------------------------------------
     public static function getTenantSampleDataClass($module_name)
     {
-        return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenants\\SampleDataTableSeeder";
+        return config('vaahcms.root_folder')."\Modules\\{$module_name}\\Database\Seeds\\Tenant\\SampleDataTableSeeder";
     }
 //-----------------------------------------------------------------------------------
     public static function getNamespace($module_name)

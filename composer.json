@@ -1,19 +1,26 @@
 {
-  "name": "webreinvent/vaahextend",
-  "description": "Quickly adaptable helpers to extend VaahCMS",
-  "keywords": ["vaahcms", "laravel"],
-  "version": "0.0.4",
-  "homepage": "https://www.webreinvent.com",
-  "license": "MIT",
-  "authors": [
+    "name": "webreinvent/vaahextend",
+    "description": "Quickly adaptable helpers to extend VaahCMS",
+    "keywords": ["vaahcms", "laravel"],
+    "version": "0.0.5",
+    "homepage": "https://www.webreinvent.com",
+    "license": "MIT",
+    "authors": [
     {
       "name": "pradeep",
       "email": "we@webreinvent.com"
     }
-  ],
-  "autoload": {
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "php-imap/php-imap": "^4.0",
+        "ext-json": "*",
+        "ext-imap": "*",
+        "ext-curl": "*"
+    },
+    "autoload": {
     "psr-4": {
       "WebReinvent\\VaahExtend\\": "./"
     }
-  }
+    }
 }

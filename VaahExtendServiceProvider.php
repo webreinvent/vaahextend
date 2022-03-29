@@ -54,12 +54,32 @@ class VaahExtendServiceProvider extends ServiceProvider {
             return new \WebReinvent\VaahExtend\Libraries\VaahMail();
         });
 
+        App::bind('vaahimap',function() {
+            return new \WebReinvent\VaahExtend\Libraries\VaahImap();
+        });
+
         App::bind('vaahmodule',function() {
             return new \WebReinvent\VaahExtend\Libraries\VaahModule();
         });
 
         App::bind('vaahurl',function() {
             return new \WebReinvent\VaahExtend\Libraries\VaahUrl();
+        });
+
+        App::bind('vaaheventbrite',function() {
+            return new \WebReinvent\VaahExtend\Libraries\VaahEventBrite\EventBrite();
+        });
+
+        App::bind('vaahextract',function() {
+            return new \WebReinvent\VaahExtend\Libraries\VaahExtract();
+        });
+
+        App::bind('vaahajax',function() {
+            return new \WebReinvent\VaahExtend\Libraries\VaahAjax();
+        });
+
+        App::bind('vaahstripe',function() {
+            return new \WebReinvent\VaahExtend\Libraries\VaahStripe();
         });
 
 
@@ -77,8 +97,13 @@ class VaahExtendServiceProvider extends ServiceProvider {
         $loader->alias('VaahCountry', \WebReinvent\VaahExtend\Facades\VaahCountry::class);
         $loader->alias('VaahFile', \WebReinvent\VaahExtend\Facades\VaahFile::class);
         $loader->alias('VaahMail', \WebReinvent\VaahExtend\Facades\VaahMail::class);
+        $loader->alias('VaahImap', \WebReinvent\VaahExtend\Facades\VaahImap::class);
         $loader->alias('VaahModule', \WebReinvent\VaahExtend\Facades\VaahModule::class);
         $loader->alias('VaahUrl', \WebReinvent\VaahExtend\Facades\VaahUrl::class);
+        $loader->alias('VaahEventBrite', \WebReinvent\VaahExtend\Facades\VaahEventBrite::class);
+        $loader->alias('VaahExtract', \WebReinvent\VaahExtend\Facades\VaahExtract::class);
+        $loader->alias('VaahAjax', \WebReinvent\VaahExtend\Facades\VaahAjax::class);
+        $loader->alias('VaahStripe', \WebReinvent\VaahExtend\Facades\VaahStripe::class);
 
     }
     //--------------------------------------------------------------------
