@@ -34,7 +34,8 @@ class VaahSmtp{
         $from_array,
         $to_array, $subject, $message,
         $cc_array=null, $bcc_array=null,
-        $attachments_array=null
+        $attachments_array=null,
+        $reply_to_array=null
     )
     {
 
@@ -58,6 +59,11 @@ class VaahSmtp{
             if( is_array($bcc_array) && count($bcc_array) > 0)
             {
                 $mail->setBcc($bcc_array);
+            }
+
+            if( is_array($reply_to_array) && count($reply_to_array) > 0)
+            {
+                $mail->setReplyTo($reply_to_array);
             }
 
             $mail->setBody($message, 'text/html');
