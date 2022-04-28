@@ -26,7 +26,7 @@ GMAIL_API_REDIRECT_URL=
 Note: `GMAIL_API_REDIRECT_URL` at this url you have to call `VaahGoogleCloud::getGmailApiToken($request)` method to get the refresh token;
 
 
-To get gmail authorization url:
+To get gmail authorization url, `VaahGoogleCloud::getGmailApiAuthUrl()` will return google authorization url and user will be redirected to the url:
 
 ```php
 public function getGmailAuthorizationUrl(Request $request)
@@ -44,8 +44,7 @@ public function getGmailAuthorizationUrl(Request $request)
 
 After successful authorization the user will be redirected to `GMAIL_API_REDIRECT_URL` url. `GMAIL_API_REDIRECT_URL` must present in the Google Cloud Platform app, refer to the video.
 
-
-To get gmail refresh token url:
+In `GMAIL_API_REDIRECT_URL` url' controller you can get the gmail refresh token using following method, `refresh_token` must be stored in encrypted form for further usages:
 
 ```php
 public function getGmailToken(Request $request)
