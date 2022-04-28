@@ -16,7 +16,9 @@
         "php-imap/php-imap": "^4.0",
         "ext-json": "*",
         "ext-imap": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "league/oauth2-google": "^4.0",
+        "phpmailer/phpmailer": "^6.6"
     },
     "autoload": {
     "psr-4": {
