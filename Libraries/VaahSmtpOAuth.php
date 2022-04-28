@@ -159,10 +159,11 @@ class VaahSmtpOAuth{
 
             $mail->Subject = $subject;
             $mail->msgHTML($message);
-            $mail->send();
+            $result = $mail->send();
 
             $response['success'] = true;
-            $response['data'] = true;
+            $response['data']['smtp_response'] = $result;
+            $response['messages'][]= 'Email has been sent';
             return $response;
 
         }catch(\Exception $e)
