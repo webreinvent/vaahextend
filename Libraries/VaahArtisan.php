@@ -84,6 +84,11 @@ class VaahArtisan{
         return self::migrate('migrate:reset', $db_connection_name, $path);
     }
     //-------------------------------------------------
+    public static function migrationFresh($db_connection_name=null)
+    {
+        return self::migrate('migrate:fresh', $db_connection_name);
+    }
+    //-------------------------------------------------
     public static function validateSeedCommand($command)
     {
         //acceptable commands
