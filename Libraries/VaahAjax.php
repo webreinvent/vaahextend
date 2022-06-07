@@ -39,7 +39,7 @@ class VaahAjax{
         }catch(\Exception $e)
         {
             $response['status'] = 'failed';
-            $response['errors'][] = $e->getMessage();
+            $response['errors'] = [$e->getMessage()];
 
         }
         return $response;
