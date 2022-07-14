@@ -40,8 +40,17 @@ class VaahImap{
 
         if(!$connect)
         {
+            $imap_error = imap_last_error();
+            $errors = ["Error opening mailbox: ".imap_last_error()];
+            if($imap_error === 'Too many login failures' && str_contains($this->mailbox, 'gmail'))
+            {
+                $errors[] = "Make sure you enable the imap & turn on
+'Allow less secure apps' option for your Google Account.";
+            }
+
             $response['status'] = "failed";
-            $response['errors'][] = "Error opening mailbox: ".imap_last_error();
+            $response['errors'] = $errors;
+
         } else
         {
             $response['status'] = "success";

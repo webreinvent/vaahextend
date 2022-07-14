@@ -82,6 +82,9 @@ class VaahExtendServiceProvider extends ServiceProvider {
             return new \WebReinvent\VaahExtend\Libraries\VaahStripe();
         });
 
+        App::bind('vaahgooglecloud',function() {
+            return new \WebReinvent\VaahExtend\Libraries\VaahGoogleCloud();
+        });
 
         $this->registerAlias();
 
@@ -104,6 +107,7 @@ class VaahExtendServiceProvider extends ServiceProvider {
         $loader->alias('VaahExtract', \WebReinvent\VaahExtend\Facades\VaahExtract::class);
         $loader->alias('VaahAjax', \WebReinvent\VaahExtend\Facades\VaahAjax::class);
         $loader->alias('VaahStripe', \WebReinvent\VaahExtend\Facades\VaahStripe::class);
+        $loader->alias('VaahGoogleCloud', \WebReinvent\VaahExtend\Facades\VaahGoogleCloud::class);
 
     }
     //--------------------------------------------------------------------

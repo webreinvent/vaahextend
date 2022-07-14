@@ -17,6 +17,7 @@ class VaahArtisan{
     //-------------------------------------------------
     public static function validateMigrateCommands($command)
     {
+        $response = [];
         //acceptable commands
         $commands = [
             "migrate",
@@ -30,7 +31,7 @@ class VaahArtisan{
         if(!in_array($command, $commands))
         {
             $response['status'] = 'failed';
-            $response['errors'][] = 'Invalid command';
+            $response['errors'] = ['Invalid command'];
             if(env('APP_DEBUG'))
             {
                 $response['hint']['acceptable_commands'] = $commands;
@@ -44,6 +45,7 @@ class VaahArtisan{
     //-------------------------------------------------
     public static function artisan()
     {
+        $response = [];
         try{
             \Artisan::call(self::$command, self::$params);
             $response['status'] = 'success';
@@ -82,6 +84,11 @@ class VaahArtisan{
     public static function migrationReset($path=null, $db_connection_name=null)
     {
         return self::migrate('migrate:reset', $db_connection_name, $path);
+    }
+    //-------------------------------------------------
+    public static function migrationFresh($db_connection_name=null)
+    {
+        return self::migrate('migrate:fresh', $db_connection_name);
     }
     //-------------------------------------------------
     public static function validateSeedCommand($command)
