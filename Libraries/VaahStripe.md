@@ -33,7 +33,7 @@ Add Facade in `config/app.php`:
 ```
 
 Add env configuration:
-```
+```env
 
 ...
 STRIPE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -47,7 +47,7 @@ Reference url: https://stripe.com/docs/api
 
 - Stripe One Time Payment 
 
-```
+```php
 
     $customer => [
         'name'   => 'xxxxxx',
@@ -106,9 +106,9 @@ Reference url: https://stripe.com/docs/api
         'state'         => 'xxxxxx'                     // optional
     ];
 
-    $price_id      // Price define the unit cost, currency, and (optional) billing cycle for Subcription   
+    $price_id = 50;      // Price define the unit cost, currency, and (optional) billing cycle for Subcription   
     
-    $return_url    // URL to redirect your customer back to after they authenticate or cancel their payment
+    $return_url = "";    // URL to redirect your customer back to after they authenticate or cancel their payment
 
     \VaahStripe::subscription($customer, $card, $address, $price_id, $return_url);
 
@@ -151,11 +151,11 @@ Reference url: https://stripe.com/docs/api
 - Find Price
 ```php
 
-    $product_id    
+    $product_id = 1;    
     
-    $value          //optional
+    $value = "";          //optional
     
-    $by             //optional       default = amount       amount/currency/interval
+    $by = "";             //optional       default = amount       amount/currency/interval
     
     \VaahStripe::getProductPrice($product_id, $value, $by);
 
