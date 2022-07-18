@@ -88,7 +88,7 @@ Response
 {
     "status": "success",
     "data": {
-        "id": "pi_1LMvsxxxxxxxxxxxxxxxxxx",
+        "id": "pi_1LMvsxxxxxxxxxxxxxxxxxx",          // Payment Intent ID
         "object": "payment_intent",
         "allowed_source_types": [
             "card"
@@ -125,7 +125,7 @@ Response
         "next_action": {
             "redirect_to_url": {
                 "return_url": "http://localhost/vikram/vaahcms-dev-env/public",
-                "url": "https://hooks.stripe.com/3d_secure_2/hosted?merchant=                      // Url to open 3d Secure / OTP Page
+                "url": "https://hooks.stripe.com/3d_secure_2/hosted?merchant=                      // Url to complete your 3D secure Payment or open OTP Page
                 acct_1G43A8GBqaITyEUt&payment_intent=pi_1LMvsxxxxxxxxxxxxxxxxxx&
                 payment_intent_client_secret=pi_1LMvsxxxxxxxxxxxxxxxxxx_secret_8RZiIyhUEGDqfyLOgSUEAEhXN&
                 publishable_key=pk_test_xaKKES0OlRzwNj6mCRBbjfc200upEjyqmB&source=src_1LMvsEGBqaITyEUtehquCgzp"
@@ -136,7 +136,7 @@ Response
             "type": "authorize_with_url",
             "authorize_with_url": {
                 "return_url": "http://localhost/vikram/vaahcms-dev-env/public",
-                "url": "https://hooks.stripe.com/3d_secure_2/hosted?merchant=                     // Url to open 3d Secure / OTP Page
+                "url": "https://hooks.stripe.com/3d_secure_2/hosted?merchant=                     // Url to complete your 3D secure Payment or open OTP Page
                 acct_1G43A8GBqaITyEUt&payment_intent=pi_1LMvsxxxxxxxxxxxxxxxxxx&
                 payment_intent_client_secret=pi_1LMvsxxxxxxxxxxxxxxxxxx_secret_8RZiIyhUEGDqfyLOgSUEAEhXN&
                 publishable_key=pk_test_xaKKES0OlRzwNj6mCRBbjfc200upEjyqmB&source=src_1LMvsEGBqaITyEUtehquCgzp"
@@ -194,12 +194,101 @@ Response
         'state'         => 'xxxxxx'                     // optional
     ];
 
-    $price_id      // Price define the unit cost, currency, and (optional) billing cycle for Subcription   
+    $price_id    You can generate Price ID from createPrice Method of Vaah Stripe                                 // Price define the unit cost, currency, and (optional) billing cycle for Subcription   
+    or You can create directly from Stripe Dashboard by visit https://dashboard.stripe.com/test/products/create 
     
     $return_url = http://localhost/vaahcms/public/      // URL to redirect your customer back to after they authenticate or cancel their payment
 
     \VaahStripe::subscription($customer, $card, $address, $price_id, $return_url);
 
+```
+
+Response
+
+```
+{
+    "status": "success",
+    "data": {
+        "id": "pi_1LMwxxxxxxxxxxxxxxxxxxxx",
+        "object": "payment_intent",
+        "allowed_source_types": [
+            "card"
+        ],
+        "amount": 79900,
+        "amount_capturable": 0,
+        "amount_details": {
+            "tip": []
+        },
+        "amount_received": 0,
+        "application": null,
+        "application_fee_amount": null,
+        "automatic_payment_methods": null,
+        "canceled_at": null,
+        "cancellation_reason": null,
+        "capture_method": "automatic",
+        "charges": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/charges?payment_intent=pi_1LMwxxxxxxxxxxxxxxxxxxxx"
+        },
+        "client_secret": "pi_1LMwxxxxxxxxxxxxxxxxxxxx_secret_usv8FrEvzU0CuWEyRjmUKlmjD",
+        "confirmation_method": "automatic",
+        "created": 1658161603,
+        "currency": "usd",
+        "customer": "cus_M570qAPnoC6xl1",
+        "description": "Subscription creation",
+        "invoice": "in_1LMwmxxxxxxxxxxxxxxxxxxx",
+        "last_payment_error": null,
+        "livemode": false,
+        "metadata": [],
+        "next_action": {
+            "redirect_to_url": {
+                "return_url": "http://localhost/vikram/vaahcms-dev-env/public",
+                "url": "https://hooks.stripe.com/3d_secure_2/hosted?merchant=                                               // Url to complete your 3D secure Payment or open OTP Page
+                acct_1G43A8GBqaITyEUt&payment_intent=pi_1LMwxxxxxxxxxxxxxxxxxxxx&
+                payment_intent_client_secret=pi_1LMwxxxxxxxxxxxxxxxxxxxx_secret_usv8FrEvzU0CuWEyRjmUKlmjD&
+                publishable_key=pk_test_xaKKES0OlRzwNj6mCRBbjfc200upEjyqmB&source=src_1LMwmQGBqaITyEUtQsNKeDZn"
+            },
+            "type": "redirect_to_url"
+        },
+        "next_source_action": {
+            "type": "authorize_with_url",
+            "authorize_with_url": {
+                "return_url": "http://localhost/vikram/vaahcms-dev-env/public",
+                "url": "https://hooks.stripe.com/3d_secure_2/hosted?merchant=                                               // Url to complete your 3D secure Payment or open OTP Page
+                acct_1G43A8GBqaITyEUt&payment_intent=pi_1LMwxxxxxxxxxxxxxxxxxxxx&
+                payment_intent_client_secret=pi_1LMwxxxxxxxxxxxxxxxxxxxx_secret_usv8FrEvzU0CuWEyRjmUKlmjD&
+                publishable_key=pk_test_xaKKES0OlRzwNj6mCRBbjfc200upEjyqmB&source=src_1LMwmQGBqaITyEUtQsNKeDZn"
+            }
+        },
+        "on_behalf_of": null,
+        "payment_method": null,
+        "payment_method_options": {
+            "card": {
+                "installments": null,
+                "mandate_options": null,
+                "network": null,
+                "request_three_d_secure": "automatic"
+            }
+        },
+        "payment_method_types": [
+            "card"
+        ],
+        "processing": null,
+        "receipt_email": null,
+        "review": null,
+        "setup_future_usage": "off_session",
+        "shipping": null,
+        "source": "card_1LMxxxxxxxxxxxxxxxxx",
+        "statement_descriptor": null,
+        "statement_descriptor_suffix": null,
+        "status": "requires_source_action",
+        "transfer_data": null,
+        "transfer_group": null
+    }
+}
 ```
 
 - Create Product
@@ -216,6 +305,8 @@ Response
 
 - Create Price
 ```php
+
+    // You need to have Product id to create Price.
 
     $request => [
         'product_id'    => 'xxxxxx',
