@@ -76,10 +76,98 @@ Reference url: https://stripe.com/docs/api
         'state'         => 'xxxxxx'                     // optional
     ];
     
-    $return_url    // URL to redirect your customer back to after they authenticate or cancel their payment
+    $return_url = http://localhost/vaahcms/public/      // URL to redirect your customer back to after they authenticate or cancel their payment
 
     \VaahStripe::pay($customer, $card, $package, $address, $return_url);
 
+```
+
+Response
+
+```
+{
+    "status": "success",
+    "data": {
+        "id": "pi_1LMvsxxxxxxxxxxxxxxxxxx",
+        "object": "payment_intent",
+        "allowed_source_types": [
+            "card"
+        ],
+        "amount": 200,
+        "amount_capturable": 0,
+        "amount_details": {
+            "tip": []
+        },
+        "amount_received": 0,
+        "application": null,
+        "application_fee_amount": null,
+        "automatic_payment_methods": null,
+        "canceled_at": null,
+        "cancellation_reason": null,
+        "capture_method": "automatic",
+        "charges": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/charges?payment_intent=pi_1LMvsxxxxxxxxxxxxxxxxxx"
+        },
+        "client_secret": "pi_1LMvsxxxxxxxxxxxxxxxxxx_secret_8RZiIyhUEGDqfyLOgSUEAEhXN",
+        "confirmation_method": "automatic",
+        "created": 1658158118,
+        "currency": "usd",
+        "customer": "cus_M564xxxxxxx",
+        "description": "testing",
+        "invoice": null,
+        "last_payment_error": null,
+        "livemode": false,
+        "metadata": [],
+        "next_action": {
+            "redirect_to_url": {
+                "return_url": "http://localhost/vikram/vaahcms-dev-env/public",
+                "url": "https://hooks.stripe.com/3d_secure_2/hosted?merchant=                      // Url to open 3d Secure / OTP Page
+                acct_1G43A8GBqaITyEUt&payment_intent=pi_1LMvsxxxxxxxxxxxxxxxxxx&
+                payment_intent_client_secret=pi_1LMvsxxxxxxxxxxxxxxxxxx_secret_8RZiIyhUEGDqfyLOgSUEAEhXN&
+                publishable_key=pk_test_xaKKES0OlRzwNj6mCRBbjfc200upEjyqmB&source=src_1LMvsEGBqaITyEUtehquCgzp"
+            },
+            "type": "redirect_to_url"
+        },
+        "next_source_action": {
+            "type": "authorize_with_url",
+            "authorize_with_url": {
+                "return_url": "http://localhost/vikram/vaahcms-dev-env/public",
+                "url": "https://hooks.stripe.com/3d_secure_2/hosted?merchant=                     // Url to open 3d Secure / OTP Page
+                acct_1G43A8GBqaITyEUt&payment_intent=pi_1LMvsxxxxxxxxxxxxxxxxxx&
+                payment_intent_client_secret=pi_1LMvsxxxxxxxxxxxxxxxxxx_secret_8RZiIyhUEGDqfyLOgSUEAEhXN&
+                publishable_key=pk_test_xaKKES0OlRzwNj6mCRBbjfc200upEjyqmB&source=src_1LMvsEGBqaITyEUtehquCgzp"
+            }
+        },
+        "on_behalf_of": null,
+        "payment_method": "pm_1LMvsxxxxxxxxxxxxxxxxxx",
+        "payment_method_options": {
+            "card": {
+                "installments": null,
+                "mandate_options": null,
+                "network": null,
+                "request_three_d_secure": "automatic"
+            }
+        },
+        "payment_method_types": [
+            "card"
+        ],
+        "processing": null,
+        "receipt_email": null,
+        "review": null,
+        "setup_future_usage": null,
+        "shipping": null,
+        "source": null,
+        "statement_descriptor": null,
+        "statement_descriptor_suffix": null,
+        "status": "requires_source_action",
+        "transfer_data": null,
+        "transfer_group": null
+    }
+}
 ```
 
 - Stripe Subscription
@@ -108,7 +196,7 @@ Reference url: https://stripe.com/docs/api
 
     $price_id      // Price define the unit cost, currency, and (optional) billing cycle for Subcription   
     
-    $return_url    // URL to redirect your customer back to after they authenticate or cancel their payment
+    $return_url = http://localhost/vaahcms/public/      // URL to redirect your customer back to after they authenticate or cancel their payment
 
     \VaahStripe::subscription($customer, $card, $address, $price_id, $return_url);
 
