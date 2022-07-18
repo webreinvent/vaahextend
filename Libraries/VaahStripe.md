@@ -49,25 +49,25 @@ Reference url: https://stripe.com/docs/api
 
 ```php
 
-    $customer => [
+    $customer = [
         'name'   => 'xxxxxx',
         'email'  => 'xx@example.com'
     ];
     
-    $card => [
+    $card = [
         'number'        => 'xxxx-xxxx-xxxx-xxxx',    
         'exp_month'     => '01',                        // 01-12
         'exp_year'      => '2021',
         'cvc'           => 'xxx'
     ];
     
-    $package => [
+    $package = [
         'currency'      => 'usd',                       // usd / USD
         'amount'        => '01',
         'description'   => 'xxxxxx'
     ];
     
-    $address => [
+    $address = [
         'city'          => 'xxxxxx',                    // optional    
         'country'       => 'xxxxxx',                                   
         'line1'         => 'xxxxxx',                    
@@ -76,7 +76,7 @@ Reference url: https://stripe.com/docs/api
         'state'         => 'xxxxxx'                     // optional
     ];
     
-    $return_url    // URL to redirect your customer back to after they authenticate or cancel their payment
+    $return_url = "";    // URL to redirect your customer back to after they authenticate or cancel their payment
 
     \VaahStripe::pay($customer, $card, $package, $address, $return_url);
 
@@ -85,19 +85,19 @@ Reference url: https://stripe.com/docs/api
 - Stripe Subscription
 ```php
 
-    $customer => [
+    $customer = [
         'name'   => 'xxxxxx',
         'email'  => 'xx@example.com'
     ];
     
-    $card => [
+    $card = [
         'number'        => 'xxxx-xxxx-xxxx-xxxx',    
         'exp_month'     => '01',                        // 01-12
         'exp_year'      => '2021',
         'cvc'           => 'xxx'
     ];
     
-    $address => [
+    $address = [
         'city'          => 'xxxxxx',                    // optional    
         'country'       => 'xxxxxx',                                   
         'line1'         => 'xxxxxx',                    
@@ -117,7 +117,7 @@ Reference url: https://stripe.com/docs/api
 - Create Product
 ```php
 
-    $request => [
+    $request = [
         'name'          => 'xxxxxx',
         'description'   => 'xxxxxx'
     ];
@@ -129,7 +129,7 @@ Reference url: https://stripe.com/docs/api
 - Create Price
 ```php
 
-    $request => [
+    $request = [
         'product_id'    => 'xxxxxx',
         'currency'      => 'usd',
         'amount'        => '01',
