@@ -82,7 +82,7 @@ Reference url: https://stripe.com/docs/api
 
 ```
 
-Response
+Success Response 
 
 ```
 {
@@ -203,13 +203,13 @@ Response
 
 ```
 
-Response
+Success Response 
 
 ```
 {
     "status": "success",
     "data": {
-        "id": "pi_1LMwxxxxxxxxxxxxxxxxxxxx",
+        "id": "pi_1LMwxxxxxxxxxxxxxxxxxxxx",                // Payment Intent ID
         "object": "payment_intent",
         "allowed_source_types": [
             "card"
@@ -303,6 +303,42 @@ Response
 
 ```
 
+Success Response 
+
+```
+{
+    "status": "success",
+    "data": {
+        "id": "prod_M57xxxxxxxxxxx",         // Product Id
+        "object": "product",
+        "active": true,
+        "attributes": [],
+        "created": 1658162168,
+        "default_price": null,
+        "description": "Testing Product",
+        "images": [],
+        "livemode": false,
+        "metadata": [],
+        "name": "Vikram",
+        "package_dimensions": null,
+        "shippable": null,
+        "skus": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/skus?product=prod_M57xxxxxxxxxxx&active=true"
+        },
+        "statement_descriptor": null,
+        "tax_code": null,
+        "type": "service",
+        "unit_label": null,
+        "updated": 1658162168,
+        "url": null
+    }
+}
+```
+
 - Create Price
 ```php
 
@@ -312,7 +348,9 @@ Response
         'product_id'    => 'xxxxxx',
         'currency'      => 'usd',
         'amount'        => '01',
-        'interval'      => '01'
+        'recurring'     => [
+            'interval'    =>   'month'                         //  month, year, week, or day
+        ]
        
     ];
     
@@ -320,15 +358,90 @@ Response
 
 ```
 
+Success Response
+
+```
+{
+    "status": "success",
+    "data": {
+        "id": "price_1LMxxxxxxxxxxxxxxxx",        // Price id
+        "object": "price",
+        "active": true,
+        "billing_scheme": "per_unit",
+        "created": 1658162583,
+        "currency": "usd",
+        "custom_unit_amount": null,
+        "livemode": false,
+        "lookup_key": null,
+        "metadata": [],
+        "nickname": null,
+        "product": "prod_M579xxxxxxxx",          // Product id
+        "recurring": {
+            "aggregate_usage": null,
+            "interval": "month",
+            "interval_count": 1,
+            "trial_period_days": null,
+            "usage_type": "licensed"
+        },
+        "tax_behavior": "unspecified",
+        "tiers_mode": null,
+        "transform_quantity": null,
+        "type": "recurring",
+        "unit_amount": 20,
+        "unit_amount_decimal": "20"
+    }
+}
+```
+
 - Find Product
 ```php
+
+    $name                                   // Product Name
     
     \VaahStripe::findProductByName($name);
 
 ```
 
+Success Response 
+
+```
+{
+    "status": "success",
+    "data": {
+        "id": "prod_K1xxxxxxxx",
+        "object": "product",
+        "active": true,
+        "attributes": [],
+        "caption": null,
+        "created": 1628777285,
+        "deactivate_on": [],
+        "default_price": null,
+        "description": "WP-Maintenance-Premium-Monthly",
+        "images": [],
+        "livemode": false,
+        "metadata": [],
+        "name": "WP-Maintenance-Standard-Monthly",
+        "package_dimensions": null,
+        "shippable": true,
+        "skus": {
+            "object": "list",
+            "data": [],
+            "has_more": false,
+            "total_count": 0,
+            "url": "/v1/skus?product=prod_K1xxxxxxxxx&active=true"
+        },
+        "tax_code": null,
+        "type": "good",
+        "updated": 1628777285,
+        "url": null
+    }
+}
+```
+
 - Find Price
 ```php
+
+    //    You need to have Product id to create Price.
 
     $product_id    
     
@@ -338,4 +451,39 @@ Response
     
     \VaahStripe::getProductPrice($product_id, $value, $by);
 
+```
+
+Success Response
+
+```
+{
+    "status": "success",
+    "data": {
+        "id": "price_1LMx2xxxxxxxxxxxxxxx",
+        "object": "price",
+        "active": true,
+        "billing_scheme": "per_unit",
+        "created": 1658162583,
+        "currency": "usd",
+        "custom_unit_amount": null,
+        "livemode": false,
+        "lookup_key": null,
+        "metadata": [],
+        "nickname": null,
+        "product": "prod_M57xxxxxxxxxxxx",
+        "recurring": {
+            "aggregate_usage": null,
+            "interval": "month",
+            "interval_count": 1,
+            "trial_period_days": null,
+            "usage_type": "licensed"
+        },
+        "tax_behavior": "unspecified",
+        "tiers_mode": null,
+        "transform_quantity": null,
+        "type": "recurring",
+        "unit_amount": 20,
+        "unit_amount_decimal": "20"
+    }
+}
 ```
