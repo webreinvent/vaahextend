@@ -2,6 +2,9 @@
 namespace WebReinvent\VaahExtend\Libraries;
 
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
+use Illuminate\Support\Facades\Log;
+use PayPal\Api\OpenIdTokeninfo;
+use PayPal\Api\OpenIdUserinfo;
 use Srmklive\PayPal\Services\ExpressCheckout;
 
 
@@ -25,11 +28,173 @@ use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Common\PayPalModel;
 use PayPal\Rest\ApiContext;
 
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
+
 class VaahPayPal{
 
     //----------------------------------------------------------
-    //----------------------------------------------------------
+    public function pay($inputs){
+//        $user['email'] = $inputs['stripe']['email'];
+        $user['username'] = $inputs['user']['username'];
+//      $user['address'] = $inputs['stripe']['address'];
 
+
+        $payment = $inputs['stripe']['payment'];
+        //set user data
+//        $payerInfo = new \PayPal\Api\PayerInfo();
+//        $address = new \PayPal\Api\Address();
+//        $address->setLine1($user['address']['line1'])
+//            ->setCity($user['address']['city'])
+//            ->setState($user['address']['state'])
+//            ->setPostalCode($user['address']['postal_code'])
+//            ->setCountryCode($user['address']['country']);
+
+//        $payerInfo->setEmail($user['email'])
+//            ->setFirstName($user['name'])
+//            ->setBillingAddress($address);
+
+        $payer = new \PayPal\Api\Payer();
+        $payer->setPaymentMethod("paypal");
+//            ->setPayerInfo($payerInfo);
+
+        $item = new \PayPal\Api\Item();
+        $item->setName($payment['description'])
+            ->setCurrency($payment['currency'])
+            ->setPrice($payment['amount'])
+            ->setQuantity(1);
+
+        $itemList = new \PayPal\Api\ItemList();
+        $itemList->setItems(array($item));
+
+//        $details = new \PayPal\Api\Details();
+//        $details->setTax(0)->setSubtotal($payment['amount']);
+
+        $amount = new \PayPal\Api\Amount();
+        $total = $payment['amount'] * $item->getQuantity();
+        $amount->setCurrency($payment['currency'])
+            ->setTotal($total);
+
+
+        $transaction = new \PayPal\Api\Transaction();
+        $transaction->setAmount($amount)->setItemList($itemList)
+            ->setDescription($payment['description'])
+            ->setInvoiceNumber(uniqid());
+
+        $returnUrl = url('/').'#/paypal/complete';
+        $cancelUrl = url('/').'#/paypal/cancel';
+        $redirectUrls = new \PayPal\Api\RedirectUrls();
+        $redirectUrls->setReturnUrl($returnUrl)
+            ->setCancelUrl($cancelUrl);
+
+        $payment = new \PayPal\Api\Payment();
+        $payment->setIntent("sale")
+            ->setPayer($payer)
+            ->setRedirectUrls($redirectUrls)
+            ->setTransactions(array($transaction));
+
+
+        $apiContext = $this->getApiContext(
+            env('PAYPAL_SANDBOX_CLIENT_ID'),
+            env('PAYPAL_SANDBOX_CLIENT_SECRET')
+        );
+        try {
+            $resp = $payment->create($apiContext);
+            $approvalUrl = $resp->getApprovalLink();
+            $response = [];
+            $response['status'] = 'success';
+            $response['data']['approval_url'] = $approvalUrl;
+            $response['data']['payment_id'] = $resp->getId();
+            $response['data']['token'] = $resp->getToken();
+            return $response;
+        } catch (\PayPal\Exception\PayPalConnectionException $ex) {
+            $response = [];
+            $response['status'] = 'failed';
+            $response['error'] = $ex->getData();
+            return $response;
+        } catch (\Exception $ex) {
+            $response = [];
+            $response['status'] = 'failed';
+            $response['error'] = $ex->getMessage();
+            return $response;
+        }
+    }
+     public function getUserInfo(){
+        $apiContext = $this->getApiContext(
+            env('PAYPAL_SANDBOX_CLIENT_ID'),
+            env('PAYPAL_SANDBOX_CLIENT_SECRET')
+        );
+         try {
+             $token = $apiContext->getCredential()->getAccessToken($apiContext);
+             $user = OpenIdUserinfo::getUserinfo(['access_token' => $token], $apiContext);
+             $response = [];
+                $response['status'] = 'success';
+                $response['data'] = $user->toArray();
+                return $response;
+         } catch (\PayPal\Exception\PayPalConnectionException $ex) {
+             $response = [];
+             $response['status'] = 'failed';
+             $response['error'] = json_decode($ex->getData())->message;
+             return $response;
+         } catch (\Exception $ex) {
+             $response = [];
+             $response['status'] = 'failed';
+             $response['error'] = $ex->getMessage();
+             return $response;
+         }
+    }
+    //----------------------------------------------------------
+    public function executePayment($paymentId, $payerId)
+    {
+        $apiContext = $this->getApiContext(
+            env('PAYPAL_SANDBOX_CLIENT_ID'),
+            env('PAYPAL_SANDBOX_CLIENT_SECRET')
+        );
+      try {
+        $payment = \PayPal\Api\Payment::get($paymentId, $apiContext);
+        $execution = new \PayPal\Api\PaymentExecution();
+        $execution->setPayerId($payerId);
+        $result = $payment->execute($execution, $apiContext);
+        $response = [];
+        $response['status'] = 'success';
+        $response['data'] = $result->toArray();
+        return $response;
+      } catch (\PayPal\Exception\PayPalConnectionException $ex) {
+        $response = [];
+        $response['status'] = 'failed';
+        $response['error'] = json_decode($ex->getData())->message;
+        return $response;
+      } catch (\Exception $ex) {
+        $response = [];
+        $response['status'] = 'failed';
+        $response['error'] = $ex->getMessage();
+        return $response;
+      }
+    }
+    //----------------------------------------------------------
+   public function getPaymentDetailByPaymentID($paymentId)
+    {
+        $apiContext = $this->getApiContext(
+            env('PAYPAL_SANDBOX_CLIENT_ID'),
+            env('PAYPAL_SANDBOX_CLIENT_SECRET')
+        );
+        try {
+            $payment = \PayPal\Api\Payment::get($paymentId, $apiContext);
+            $response = [];
+            $response['status'] = 'success';
+            $response['data'] = $payment->toArray();
+            return $response;
+        } catch (\PayPal\Exception\PayPalConnectionException $ex) {
+            $response = [];
+            $response['status'] = 'failed';
+            $response['error'] = json_decode($ex->getData())->message;
+            return $response;
+        } catch (\Exception $ex) {
+            $response = [];
+            $response['status'] = 'failed';
+            $response['error'] = $ex->getMessage();
+            return $response;
+        }
+    }
     //----------------------------------------------------
     public function payPalOnetime( $inputs, $shippingAddress = null ) {
 
@@ -129,7 +294,7 @@ class VaahPayPal{
         if ( $address ) {
             $itemList->setShippingAddress( $address );
         }
-        $_amount = $inputs['price'] + $tax;
+        $_amount = ($inputs['price'] * $inputs['item_quantity']) + $tax;
         //Payment Amount
         $amount = new Amount();
         $amount->setCurrency( $inputs['currency'] )
@@ -150,6 +315,7 @@ class VaahPayPal{
         // A Payment Resource; create one using
         // the above types and intent as 'sale'
         //die;
+//        return $transaction;
         $redirectUrls = new RedirectUrls();
         $redirectUrls->setReturnUrl( $inputs['success_url'] )
             ->setCancelUrl( $inputs['failed_url'] );
@@ -163,7 +329,7 @@ class VaahPayPal{
             // Create a payment by posting to the APIService
             // using a valid ApiContext
             // The return object contains the status;
-            $apiContext = $this->getApiContext( env( 'PAYPAL_CLIENT_ID', '' ), env( 'PAYPAL_CLIENT_SECRET', '' ) );
+            $apiContext = $this->getApiContext( env( 'PAYPAL_SANDBOX_CLIENT_ID', '' ), env( 'PAYPAL_SANDBOX_CLIENT_SECRET', '' ) );
             $payment->create( $apiContext );
             $approved_url = $payment->getApprovalLink();
             $approved_url = parse_url( $approved_url );
@@ -342,7 +508,8 @@ class VaahPayPal{
             new OAuthTokenCredential(
                 $clientId,
                 $clientSecret
-            )
+            ),
+
         );
         // Comment this line out and uncomment the PP_CONFIG_PATH
         // 'define' block if you want to use static file
@@ -369,37 +536,37 @@ class VaahPayPal{
     }
     //----------------------------------------------------
     //-----------------------------------------------------------------
-    public function executePayment( Request $request ) {
-        $response = [];
-        if ( $request->has( 'paymentId' ) && $request->has( 'PayerID' ) ) {
-
-            $paymentId  = $request->paymentId;
-            $payerId    = $request->PayerID;
-            $apiContext = $this->getApiContext( env( 'PAYPAL_CLIENT_ID', '' ),
-                env( 'PAYPAL_CLIENT_SECRET', '' ) );
-            $payment    = Payment::get( $paymentId, $apiContext );
-            $execution  = new PaymentExecution();
-            $execution->setPayerId( $payerId );
-            try {
-                $result             = $payment->execute( $execution, $apiContext );
-                $response['status'] = 'success';
-                $response['data']   = $paymentId;
-
-                return $response;
-            } catch ( \Exception $e ) {
-
-                $response['status']   = 'failed';
-                $response['errors'][] = $e->getMessage();
-
-                return $response;
-            }
-        }
-
-        $response['status']   = 'failed';
-        $response['errors'][] = 'Something went wrong. No Payment Id is received.';
-
-        return $response;
-    }
+//    public function executePayment( Request $request ) {
+//        $response = [];
+//        if ( $request->has( 'paymentId' ) && $request->has( 'PayerID' ) ) {
+//
+//            $paymentId  = $request->paymentId;
+//            $payerId    = $request->PayerID;
+//            $apiContext = $this->getApiContext( env( 'PAYPAL_CLIENT_ID', '' ),
+//                env( 'PAYPAL_CLIENT_SECRET', '' ) );
+//            $payment    = Payment::get( $paymentId, $apiContext );
+//            $execution  = new PaymentExecution();
+//            $execution->setPayerId( $payerId );
+//            try {
+//                $result             = $payment->execute( $execution, $apiContext );
+//                $response['status'] = 'success';
+//                $response['data']   = $paymentId;
+//
+//                return $response;
+//            } catch ( \Exception $e ) {
+//
+//                $response['status']   = 'failed';
+//                $response['errors'][] = $e->getMessage();
+//
+//                return $response;
+//            }
+//        }
+//
+//        $response['status']   = 'failed';
+//        $response['errors'][] = 'Something went wrong. No Payment Id is received.';
+//
+//        return $response;
+//    }
 
     //-----------------------------------------------------------------
     public function executePlan( Request $request ) {
