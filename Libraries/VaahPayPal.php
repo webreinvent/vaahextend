@@ -32,6 +32,23 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class VaahPayPal{
 
+    private $apiContext;
+    private $mode;
+    private $client_id;
+    private $client_secret;
+    private $return_url;
+    private $cancel_url;
+
+    public function __construct()
+    {
+        $this->mode = env('PAYPAL_MODE');
+        $this->client_id = $this->mode == 'sandbox' ? env('PAYPAL_SANDBOX_CLIENT_ID') : env('PAYPAL_LIVE_CLIENT_ID');
+        $this->client_secret = $this->mode == 'sandbox' ? env('PAYPAL_SANDBOX_CLIENT_SECRET') : env('PAYPAL_LIVE_CLIENT_SECRET');
+        $this->return_url = url('/').'#/paypal/complete';
+        $this->cancel_url = url('/').'#/paypal/cancel';
+        $this->apiContext = $this->getApiContext($this->client_id, $this->client_secret);
+    }
+
     //----------------------------------------------------------
     public function pay($inputs){
 //        $user['email'] = $inputs['stripe']['email'];
