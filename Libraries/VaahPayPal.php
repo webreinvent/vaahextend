@@ -2,10 +2,7 @@
 namespace WebReinvent\VaahExtend\Libraries;
 
 use Cartalyst\Stripe\Laravel\Facades\Stripe;
-use Illuminate\Support\Facades\Log;
-use PayPal\Api\OpenIdTokeninfo;
 use PayPal\Api\OpenIdUserinfo;
-use Srmklive\PayPal\Services\ExpressCheckout;
 
 
 use Illuminate\Http\Request;
@@ -27,8 +24,6 @@ use PayPal\Api\Transaction;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Common\PayPalModel;
 use PayPal\Rest\ApiContext;
-
-use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class VaahPayPal{
 
@@ -55,68 +50,46 @@ class VaahPayPal{
         $user['username'] = $inputs['user']['username'];
 //      $user['address'] = $inputs['stripe']['address'];
 
-
         $payment = $inputs['stripe']['payment'];
-        //set user data
-//        $payerInfo = new \PayPal\Api\PayerInfo();
-//        $address = new \PayPal\Api\Address();
-//        $address->setLine1($user['address']['line1'])
-//            ->setCity($user['address']['city'])
-//            ->setState($user['address']['state'])
-//            ->setPostalCode($user['address']['postal_code'])
-//            ->setCountryCode($user['address']['country']);
-
-//        $payerInfo->setEmail($user['email'])
-//            ->setFirstName($user['name'])
-//            ->setBillingAddress($address);
 
         $payer = new \PayPal\Api\Payer();
         $payer->setPaymentMethod("paypal");
-//            ->setPayerInfo($payerInfo);
-
+        //set item info
         $item = new \PayPal\Api\Item();
         $item->setName($payment['description'])
             ->setCurrency($payment['currency'])
             ->setPrice($payment['amount'])
             ->setQuantity(1);
-
+        //set item list
         $itemList = new \PayPal\Api\ItemList();
         $itemList->setItems(array($item));
 
-//        $details = new \PayPal\Api\Details();
-//        $details->setTax(0)->setSubtotal($payment['amount']);
-
+        //set amount
         $amount = new \PayPal\Api\Amount();
         $total = $payment['amount'] * $item->getQuantity();
         $amount->setCurrency($payment['currency'])
             ->setTotal($total);
 
-
+        //set transaction
         $transaction = new \PayPal\Api\Transaction();
         $transaction->setAmount($amount)->setItemList($itemList)
             ->setDescription($payment['description'])
             ->setInvoiceNumber(uniqid());
-
-        $returnUrl = url('/').'#/paypal/complete';
-        $cancelUrl = url('/').'#/paypal/cancel';
+        //set redirect urls
         $redirectUrls = new \PayPal\Api\RedirectUrls();
-        $redirectUrls->setReturnUrl($returnUrl)
-            ->setCancelUrl($cancelUrl);
-
+        $redirectUrls->setReturnUrl($this->return_url)
+            ->setCancelUrl($this->cancel_url);
+        //set payment
         $payment = new \PayPal\Api\Payment();
         $payment->setIntent("sale")
             ->setPayer($payer)
             ->setRedirectUrls($redirectUrls)
             ->setTransactions(array($transaction));
 
-
-        $apiContext = $this->getApiContext(
-            env('PAYPAL_SANDBOX_CLIENT_ID'),
-            env('PAYPAL_SANDBOX_CLIENT_SECRET')
-        );
+         //create payment with valid api context
         try {
-            $resp = $payment->create($apiContext);
-            $approvalUrl = $resp->getApprovalLink();
+            $resp = $payment->create($this->apiContext);
+            $approvalUrl = $resp->getApprovalLink(); //approval url
             $response = [];
             $response['status'] = 'success';
             $response['data']['approval_url'] = $approvalUrl;
@@ -135,14 +108,12 @@ class VaahPayPal{
             return $response;
         }
     }
+    //----------------------------------------------------------
      public function getUserInfo(){
-        $apiContext = $this->getApiContext(
-            env('PAYPAL_SANDBOX_CLIENT_ID'),
-            env('PAYPAL_SANDBOX_CLIENT_SECRET')
-        );
+        //getting user details
          try {
-             $token = $apiContext->getCredential()->getAccessToken($apiContext);
-             $user = OpenIdUserinfo::getUserinfo(['access_token' => $token], $apiContext);
+             $token = $this->apiContext->getCredential()->getAccessToken($this->apiContext); //get access token
+             $user = OpenIdUserinfo::getUserinfo(['access_token' => $token], $this->apiContext);
              $response = [];
                 $response['status'] = 'success';
                 $response['data'] = $user->toArray();
@@ -162,15 +133,11 @@ class VaahPayPal{
     //----------------------------------------------------------
     public function executePayment($paymentId, $payerId)
     {
-        $apiContext = $this->getApiContext(
-            env('PAYPAL_SANDBOX_CLIENT_ID'),
-            env('PAYPAL_SANDBOX_CLIENT_SECRET')
-        );
       try {
-        $payment = \PayPal\Api\Payment::get($paymentId, $apiContext);
+        $payment = \PayPal\Api\Payment::get($paymentId, $this->apiContext);
         $execution = new \PayPal\Api\PaymentExecution();
         $execution->setPayerId($payerId);
-        $result = $payment->execute($execution, $apiContext);
+        $result = $payment->execute($execution, $this->apiContext);
         $response = [];
         $response['status'] = 'success';
         $response['data'] = $result->toArray();
@@ -188,31 +155,6 @@ class VaahPayPal{
       }
     }
     //----------------------------------------------------------
-   public function getPaymentDetailByPaymentID($paymentId)
-    {
-        $apiContext = $this->getApiContext(
-            env('PAYPAL_SANDBOX_CLIENT_ID'),
-            env('PAYPAL_SANDBOX_CLIENT_SECRET')
-        );
-        try {
-            $payment = \PayPal\Api\Payment::get($paymentId, $apiContext);
-            $response = [];
-            $response['status'] = 'success';
-            $response['data'] = $payment->toArray();
-            return $response;
-        } catch (\PayPal\Exception\PayPalConnectionException $ex) {
-            $response = [];
-            $response['status'] = 'failed';
-            $response['error'] = json_decode($ex->getData())->message;
-            return $response;
-        } catch (\Exception $ex) {
-            $response = [];
-            $response['status'] = 'failed';
-            $response['error'] = $ex->getMessage();
-            return $response;
-        }
-    }
-    //----------------------------------------------------
     public function payPalOnetime( $inputs, $shippingAddress = null ) {
 
         $inputs  = [
