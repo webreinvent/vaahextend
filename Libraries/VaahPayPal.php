@@ -26,7 +26,6 @@ use PayPal\Rest\ApiContext;
 
 class VaahPayPal{
 
-    private $apiContext;
     private $mode;
     private $client_id;
     private $client_secret;
@@ -46,7 +45,6 @@ class VaahPayPal{
         $this->client_secret = $client_secret;
         $this->return_url = $return_url;
         $this->cancel_url = $cancel_url;
-        $this->apiContext = $this->getApiContext($this->client_id, $this->client_secret);
     }
 
     //----------------------------------------------------------
@@ -112,7 +110,7 @@ class VaahPayPal{
 
         //create payment with valid api context
         try {
-            $resp = $payment->create($this->apiContext);
+            $resp = $payment->create($this->getApiContext());
             $approvalUrl = $resp->getApprovalLink(); //approval url
             $response = [];
             $response['status'] = 'success';
@@ -136,8 +134,8 @@ class VaahPayPal{
     public function getUserInfo(){
         //getting user details
         try {
-            $token = $this->apiContext->getCredential()->getAccessToken($this->apiContext); //get access token
-            $user = OpenIdUserinfo::getUserinfo(['access_token' => $token], $this->apiContext);
+            $token = $this->getApiContext()->getCredential()->getAccessToken($this->getApiContext()); //get access token
+            $user = OpenIdUserinfo::getUserinfo(['access_token' => $token], $this->getApiContext());
             $response = [];
             $response['status'] = 'success';
             $response['data'] = $user->toArray();
@@ -158,10 +156,10 @@ class VaahPayPal{
     public function executePayment($paymentId, $payerId)
     {
         try {
-            $payment = \PayPal\Api\Payment::get($paymentId, $this->apiContext);
+            $payment = \PayPal\Api\Payment::get($paymentId, $this->getApiContext());
             $execution = new \PayPal\Api\PaymentExecution();
             $execution->setPayerId($payerId);
-            $result = $payment->execute($execution, $this->apiContext);
+            $result = $payment->execute($execution, $this->getApiContext());
             $response = [];
             $response['status'] = 'success';
             $response['data'] = $result->toArray();
@@ -179,7 +177,7 @@ class VaahPayPal{
         }
     }
     //----------------------------------------------------------
-    public function getApiContext( $clientId, $clientSecret ) {
+    private function getApiContext() {
         // #### SDK configuration
         // Register the sdk_config.ini file in current directory
         // as the configuration source.
@@ -195,8 +193,8 @@ class VaahPayPal{
         // developer.paypal.com
         $apiContext = new ApiContext(
             new OAuthTokenCredential(
-                $clientId,
-                $clientSecret
+               $this->client_id,
+                $this->client_secret
             ),
 
         );
