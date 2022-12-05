@@ -92,7 +92,7 @@ $vaahPaypal->pay([
   **Error Response**
   ```php
    [
-   'status' => 'error';
+   'status' => 'failed';
    'errors' = 'errors';
   ];
   ```
@@ -118,7 +118,7 @@ $vaahPaypal->pay([
   **Error response**
  ```php
   [
-   'status' => 'error';
+   'status' => 'failed';
    'errors' = 'errors';
   ];
 ```
