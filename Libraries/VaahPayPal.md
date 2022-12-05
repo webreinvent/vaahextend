@@ -32,11 +32,10 @@ To obtain your PayPal sandbox client ID and client secret, you will need to comp
  2. Click on the `Sandbox > Accounts` option in the top menu.
  3.  In the `Business` section, click on the `Create` button to create a
     new sandbox business account.
-    4. Enter the required information to create your account and click
-    `Create Account`.
-    5. Once your account has been created, click on the `Profile` link next
+ 4. Enter the required information to create your account and click `Create Account`.
+ 5. Once your account has been created, click on the `Profile` link next
     to the account.
-    6. On the next page, you will see your `sandbox client ID` and 
+ 6. On the next page, you will see your `sandbox client ID` and 
     `client secret`. Make sure to save these values, as you will need them to
     authenticate your app with PayPal in the sandbox environment.
 
