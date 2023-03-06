@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "php-imap/php-imap": "^4.0",
+        "php-imap/php-imap": "^5.0",
         "ext-json": "*",
         "ext-imap": "*",
         "ext-curl": "*",
