@@ -167,15 +167,15 @@ class VaahImap{
 
         $data['date_time'] = $mail->date;
 
-        $data['subject'] = $mail->subject;
+        $data['subject'] = mb_convert_encoding($mail->subject, "UTF-8", "auto");
 
         if(!isset($data['subject']) || $data['subject'] == "")
         {
             $data['subject'] = "(no subject)";
         }
 
-        $data['message_html'] = $mail->textHtml;
-        $data['message_plain'] = $mail->textPlain;
+        $data['message_html'] = mb_convert_encoding($mail->textHtml, "UTF-8", "auto");
+        $data['message_plain'] = mb_convert_encoding($mail->textPlain, "UTF-8", "auto");
 
         $data['has_attachments'] = null;
 
