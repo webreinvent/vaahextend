@@ -61,7 +61,7 @@ class VaahImap{
         return $response;
     }
     //----------------------------------------------------------
-    function connect($search_by='SINCE', $search_value=null)
+    function connect()
     {
 
         $response = $this->test();
@@ -69,10 +69,6 @@ class VaahImap{
         if(isset($response['status']) && $response['status'] == 'failed')
         {
             return $response;
-        }
-
-        if($search_by=='SINCE' && !$search_value){
-            $search_value = date('d F Y');
         }
 
         $this->imap = new \PhpImap\Mailbox(
@@ -88,6 +84,17 @@ class VaahImap{
             $this->imap->setAttachmentsIgnore(true);
         }
 
+        return $this->imap;
+    }
+    //----------------------------------------------------------
+    function searchMailBox($search_by='UNSEEN', $search_value=null){
+
+        $this->connect();
+
+        if($search_by=='SINCE' && !$search_value){
+            $search_value = date('d F Y');
+        }
+
         try {
             if($search_by == 'SINCE')
             {
@@ -97,6 +104,21 @@ class VaahImap{
             } else{
                 $this->mail_uids = $this->searchMailBox('UNSEEN', SE_UID);
             }
+
+            if(count($this->mail_uids) < 1) {
+                $response = [
+                    'status' => "success",
+                    'data' => [],
+                    'messages' => ['Mailbox is empty'],
+                ];
+                return $response;
+            }
+
+            return  [
+                'status' => "success",
+                'data' => $this->mail_uids
+            ];
+
         } catch(\PhpImap\ConnectionException $ex)
         {
             $response = [
@@ -107,21 +129,30 @@ class VaahImap{
         }
 
 
-        if(count($this->mail_uids) < 1) {
-            $response = [
-                'status' => "success",
-                'data' => [],
-                'messages' => ['Mailbox is empty'],
-            ];
-            return $response;
+
+    }
+    //----------------------------------------------------------
+    function getMailUids($search_by='SINCE', $search_value=null)
+    {
+
+        $connect = $this->searchMailBox($search_by, $search_value);
+
+        if(isset($connect['status']) && $connect['status'] == 'failed')
+        {
+            return $connect;
         }
 
+        $response = [
+            'status' => "success",
+            'data' => $this->mail_uids,
+        ];
+        return $response;
     }
     //----------------------------------------------------------
     function getMails($search_by='SINCE', $search_value=null)
     {
 
-        $connect = $this->connect($search_by, $search_value);
+        $connect = $this->searchMailBox($search_by, $search_value);
 
         if(isset($connect['status']) && $connect['status'] == 'failed')
         {
@@ -155,6 +186,9 @@ class VaahImap{
     //----------------------------------------------------------
     function getMail($uid)
     {
+
+        $this->connect();
+
         $mail = $this->imap->getMail($uid);
 
         $data['mail_uid'] = $uid;
