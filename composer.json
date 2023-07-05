@@ -2,7 +2,7 @@
     "name": "webreinvent/vaahextend",
     "description": "Quickly adaptable helpers to extend VaahCMS",
     "keywords": ["vaahcms", "laravel"],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "homepage": "https://www.webreinvent.com",
     "license": "MIT",
     "authors": [
