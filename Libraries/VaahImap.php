@@ -346,11 +346,13 @@ class VaahImap{
     //----------------------------------------------------------
 
     function markAsRead($uid){
+        $this->connect();
         return $this->imap->markMailAsRead($uid);
     }
 
     //----------------------------------------------------------
     function markMailAsUnread($uid){
+        $this->connect();
         return $this->imap->markMailAsUnread($uid);
     }
     //----------------------------------------------------------
