@@ -91,7 +91,8 @@ class VaahImap{
 
         $this->connect();
 
-        if($search_by=='SINCE' && !$search_value){
+        if($search_by === 'SINCE' && is_null($search_value))
+        {
             $search_value = date('d F Y');
         }
 
@@ -132,7 +133,7 @@ class VaahImap{
 
     }
     //----------------------------------------------------------
-    function getMailUids($search_by='SINCE', $search_value=null)
+    function getMailUids($search_by='UNSEEN', $search_value=null)
     {
 
         $connect = $this->searchMailBox($search_by, $search_value);
