@@ -14,7 +14,38 @@ class VaahAjax{
         $this->ajax = new Client();
     }
     //------------------------------------------------
-    public function post($url, $params=null, $headers = null)
+    public function get($url, $query=null, $headers = null): array
+    {
+        $data = null;
+
+        if(!is_null($query))
+        {
+            $data['query'] = $query;
+        }
+        if(!is_null($headers))
+        {
+            $data['headers'] = $headers;
+        }
+        try{
+            $res = $this->ajax->request('GET', $url, $data);
+            $response = [
+                'status' => 'success',
+                'data' => [
+                    'status_code' => $res->getStatusCode(),
+                    'body' => $res->getBody(),
+                    'content' => $res->getBody()->getContents(),
+                ]
+            ];
+        }catch(\Exception $e)
+        {
+            $response['status'] = 'failed';
+            $response['errors'] = [$e->getMessage()];
+
+        }
+        return $response;
+    }
+    //------------------------------------------------
+    public function post($url, $params=null, $headers = null): array
     {
         $data = null;
 
