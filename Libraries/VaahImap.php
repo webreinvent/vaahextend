@@ -89,7 +89,14 @@ class VaahImap{
     //----------------------------------------------------------
     function searchMailBox($search_by='UNSEEN', $search_value=null){
 
-        $this->connect();
+        $imap = $this->connect();
+
+
+        if(is_array($imap) && isset($imap['status']) && $imap['status'] === 'failed')
+        {
+            return $imap;
+        }
+
 
         if($search_by === 'SINCE' && is_null($search_value))
         {
