@@ -42,8 +42,14 @@ class VaahSmtp{
         try{
             $transport = (new Swift_SmtpTransport($this->hostname, $this->port, $this->encryption))
                 ->setUsername($this->username)
-                ->setPassword($this->password);
-
+                ->setPassword($this->password)
+                ->setStreamOptions(array(
+                    'ssl' => [
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true,
+                    ],
+                ));
 
             $mailer = new Swift_Mailer($transport);
 
