@@ -357,5 +357,10 @@ class VaahImap{
         return $this->imap->markMailAsUnread($uid);
     }
     //----------------------------------------------------------
+    function getMailAttachments($mail_uid){
+        $this->connect();
+        $mail = $this->imap->getMail($mail_uid);
+        return $mail->getAttachments();
+    }
     //----------------------------------------------------------
 }
